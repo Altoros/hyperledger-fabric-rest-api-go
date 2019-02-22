@@ -1,5 +1,12 @@
 ### Local test instructions
 
+Put in code in ~/go/src/fabricRestApiGo
+```
+cd ~/go/src/fabricRestApiGo
+go get
+go run main.go
+```
+
 To start local test net
 ```
 make restart
