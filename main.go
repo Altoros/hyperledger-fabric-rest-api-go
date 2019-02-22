@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"fabricRestApiGo/api"
+	"api"
 
 	"github.com/gorilla/mux"
 )
