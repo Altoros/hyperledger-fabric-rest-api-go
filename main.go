@@ -7,22 +7,51 @@ import (
 	"os"
 	"github.com/alexdnn11/fabric-rest-go/api"
 	"github.com/gorilla/mux"
+	"encoding/json"
 )
 
+type Config struct {
+	Org struct {
+		Admin string `json:"admin"`
+		Name  string `json:"name"`
+	} `json:"org"`
+	User struct {
+		Name string `json:"name"`
+	} `json:"user"`
+	Gopath        string `json:"gopath"`
+	ChaincodePath string `json:"chaincodePath"`
+	ConfigFile    string `json:"configPath"`
+}
+
+func LoadConfiguration(file string) Config {
+	var config Config
+	configFile, err := os.Open(file)
+	defer configFile.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	jsonParser := json.NewDecoder(configFile)
+	jsonParser.Decode(&config)
+	return config
+}
+
 func main() {
+
+	config := LoadConfiguration("./config.json")
+
 	api.FscInstance = api.FabricSdkClient{
 		// Chaincode parameters
-		GOPATH:        os.Getenv("GOPATH"),
-		ChaincodePath: "fabricRestApiGo/chaincode/",
+		GOPATH:        os.Getenv(config.Gopath),
+		ChaincodePath: config.ChaincodePath,
 
 		// Org parameters
-		OrgAdmin:      "Admin",
-		OrgName:       "org1",
+		OrgAdmin: config.Org.Admin,
+		OrgName:  config.Org.Name,
 
-		ConfigFile:    "test/config.yaml",
+		ConfigFile: config.ConfigFile,
 
 		// User parameters
-		UserName: "User1",
+		UserName: config.User.Name,
 	}
 
 	err := api.FscInstance.Initialize()
