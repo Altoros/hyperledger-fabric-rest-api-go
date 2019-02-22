@@ -1,0 +1,300 @@
+{
+	"info": {
+		"_postman_id": "fe4bb834-207b-4c1a-b792-fbc0c9cbee5c",
+		"name": "FabricApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Welcome",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080",
+					"host": [
+						"localhost"
+					],
+					"port": "8080"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chaincodes Installed",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/chaincodes/installed",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"chaincodes",
+						"installed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chaincodes Instantiated",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/channels/chainhero/chaincodes/instantiated",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels",
+						"chainhero",
+						"chaincodes",
+						"instantiated"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chaincode Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/info",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels",
+						"chainhero",
+						"chaincodes",
+						"heroes-service",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Channels",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/channels",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Channel info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/channels/chainhero",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels",
+						"chainhero"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Channel orgs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/channels/chainhero/orgs",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels",
+						"chainhero",
+						"orgs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Channel peers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/channels/chainhero/peers",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels",
+						"chainhero",
+						"peers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InitTestFixtures",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/init_test_fixtures",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"init_test_fixtures"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QueryChaincode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/query?fcn=query&args=hello,dolly",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels",
+						"chainhero",
+						"chaincodes",
+						"heroes-service",
+						"query"
+					],
+					"query": [
+						{
+							"key": "fcn",
+							"value": "query"
+						},
+						{
+							"key": "args",
+							"value": "hello,dolly"
+						},
+						{
+							"key": "args[]",
+							"value": "dolly",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InvokeChaincode",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "value",
+							"value": "123123213",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/invoke?fcn=invoke&args=hello,8877",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"channels",
+						"chainhero",
+						"chaincodes",
+						"heroes-service",
+						"invoke"
+					],
+					"query": [
+						{
+							"key": "fcn",
+							"value": "invoke"
+						},
+						{
+							"key": "args",
+							"value": "hello,8877"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
