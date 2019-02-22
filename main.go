@@ -5,9 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"api"
-
+	"github.com/alexdnn11/fabric-rest-go/api"
 	"github.com/gorilla/mux"
 )
 
