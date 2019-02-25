@@ -1,5 +1,12 @@
 .PHONY: all dev clean build up down run restart
 
+help:
+	@echo "Fabric REST API GoLang"
+	@echo "up: start testnet"
+	@echo "down: stop testnet"
+	@echo "clean: clean testnet"
+	@echo "restart: clean and start over testnet"
+
 all: clean build up run
 
 dev: build run
