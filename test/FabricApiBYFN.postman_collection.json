@@ -1,29 +1,10 @@
 {
 	"info": {
-		"_postman_id": "fe4bb834-207b-4c1a-b792-fbc0c9cbee5c",
-		"name": "FabricApi",
+		"_postman_id": "3527face-77ab-4fdc-95f9-f0e4ab8ffb08",
+		"name": "FabricApi BYFN",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
-		{
-			"name": "Welcome",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "localhost:8080",
-					"host": [
-						"localhost"
-					],
-					"port": "8080"
-				}
-			},
-			"response": []
-		},
 		{
 			"name": "Chaincodes Installed",
 			"request": {
@@ -57,14 +38,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/instantiated",
+					"raw": "localhost:8080/channels/mychannel/chaincodes/instantiated",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"mychannel",
 						"chaincodes",
 						"instantiated"
 					]
@@ -82,16 +63,16 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/info",
+					"raw": "localhost:8080/channels/mychannel/chaincodes/mycc/info",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"mychannel",
 						"chaincodes",
-						"heroes-service",
+						"mycc",
 						"info"
 					]
 				}
@@ -130,14 +111,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero",
+					"raw": "localhost:8080/channels/mychannel",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero"
+						"mychannel"
 					]
 				}
 			},
@@ -153,14 +134,14 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/orgs",
+					"raw": "localhost:8080/channels/mychannel/orgs",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"mychannel",
 						"orgs"
 					]
 				}
@@ -177,37 +158,15 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/peers",
+					"raw": "localhost:8080/channels/mychannel/peers",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"mychannel",
 						"peers"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "InitTestFixtures",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "localhost:8080/init_test_fixtures",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"init_test_fixtures"
 					]
 				}
 			},
@@ -223,26 +182,26 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/query?fcn=invoke&args=query,hello",
+					"raw": "localhost:8080/channels/mychannel/chaincodes/mycc/query?fcn=query&args=b",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"mychannel",
 						"chaincodes",
-						"heroes-service",
+						"mycc",
 						"query"
 					],
 					"query": [
 						{
 							"key": "fcn",
-							"value": "invoke"
+							"value": "query"
 						},
 						{
 							"key": "args",
-							"value": "query,hello"
+							"value": "b"
 						},
 						{
 							"key": "args[]",
@@ -270,16 +229,16 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/invoke?fcn=invoke&args=invoke,hello,42",
+					"raw": "localhost:8080/channels/mychannel/chaincodes/mycc/invoke?fcn=invoke&args=b,a,10",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"mychannel",
 						"chaincodes",
-						"heroes-service",
+						"mycc",
 						"invoke"
 					],
 					"query": [
@@ -289,12 +248,34 @@
 						},
 						{
 							"key": "args",
-							"value": "invoke,hello,42"
+							"value": "b,a,10"
 						}
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "de7649ab-2998-459a-a1ee-5283b2ebc523",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b49e70bc-8450-425e-9f24-992c7bc8a6df",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }

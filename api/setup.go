@@ -131,14 +131,6 @@ func (fsc *FabricSdkClient) Initialize() error {
 	}
 	*/
 
-	// TODO remove, required only for testing
-	fsc.InitTestFixturesHandler()
-
-	err = fsc.createEventsListeners("chainhero", "heroes-service") // TODO remove test data
-	if err != nil {
-		return errors.WithMessage(err, "failed to register and create events listeners")
-	}
-
 	fmt.Println("Initialization Successful")
 	fsc.initialized = true
 	return nil

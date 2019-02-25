@@ -1,3 +1,5 @@
 .idea
 .directory
 vendor
+test/fabric-samples
+build
