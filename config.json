@@ -1,0 +1,12 @@
+{
+  "org": {
+    "admin": "Admin",
+    "name": "org1"
+  },
+  "user": {
+    "name": "User1"
+  },
+  "gopath": "GOPATH",
+  "chaincodePath": "fabricRestApiGo/chaincode/",
+  "configFile": "test/config.yaml"
+}
