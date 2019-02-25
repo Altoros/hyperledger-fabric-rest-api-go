@@ -44,7 +44,7 @@ func (fsc *FabricSdkClient) ChaincodeInfo(channelId, chainCodeId string) (string
 	args = append(args, []byte(channelId))
 	args = append(args, []byte(chainCodeId))
 
-	client, err := fsc.ChannelClient("chainhero")
+	client, err := fsc.ChannelClient(channelId)
 	if err != nil {
 		return "", fmt.Errorf("failed to create channel client: %v", err)
 	}
