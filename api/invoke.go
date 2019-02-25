@@ -5,7 +5,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 )
 
-func (fsc *FabricSdkClient) Invoke(channelId, chaincodeId, fcn string, args []string) (string, error) {
+func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args []string) (string, error) {
 
 	// Prepare arguments
 	requestArgs := [][]byte{[]byte(fcn)}
@@ -32,7 +32,8 @@ func (fsc *FabricSdkClient) Invoke(channelId, chaincodeId, fcn string, args []st
 		}
 		go txStatusEventListener()*/
 
-	client, err := fsc.channelClient(channelId)
+
+	client, err := fsc.ChannelClient(channelId)
 	if err != nil {
 		return "", err
 	}

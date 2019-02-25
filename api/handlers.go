@@ -114,7 +114,7 @@ func GetQueryHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resultString, err := FscInstance.Query(vars["channelId"], vars["chaincodeId"], fcn, args)
+	resultString, err := Query(&FscInstance, FscInstance.GetCurrentPeer(), vars["channelId"], vars["chaincodeId"], fcn, args)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -150,7 +150,7 @@ func PostInvokeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resultString, err := FscInstance.Invoke(vars["channelId"], vars["chaincodeId"], fcn, args)
+	resultString, err := Invoke(&FscInstance, vars["channelId"], vars["chaincodeId"], fcn, args)
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

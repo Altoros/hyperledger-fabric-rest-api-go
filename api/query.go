@@ -3,9 +3,10 @@ package api
 import (
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 )
 
-func (fsc *FabricSdkClient) Query(channelId, chaincodeId, fcn string, args []string) (string, error) {
+func Query(channelClientProvider ChannelClientProvider, peer fab.Peer, channelId, chaincodeId, fcn string, args []string) (string, error) {
 
 	// Prepare arguments
 	requestArgs := [][]byte{[]byte(fcn)}
@@ -13,14 +14,14 @@ func (fsc *FabricSdkClient) Query(channelId, chaincodeId, fcn string, args []str
 		requestArgs = append(requestArgs, []byte(arg))
 	}
 
-	client, err := fsc.channelClient(channelId)
+	client, err := channelClientProvider.ChannelClient(channelId)
 	if err != nil {
 		return "", fmt.Errorf("failed to create channel client")
 	}
 
 	response, err := client.Query(
 		channel.Request{ChaincodeID: chaincodeId, Fcn: "invoke", Args: requestArgs},
-		channel.WithTargets(fsc.getFirstPeer()),
+		channel.WithTargets(peer),
 	)
 	if err != nil {
 		return "", fmt.Errorf("failed to query: %v", err)
