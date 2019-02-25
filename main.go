@@ -32,6 +32,11 @@ func main() {
 		panic(err)
 	}
 
+	fmt.Println("Start listening to localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", Router()))
+}
+
+func Router() *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", api.WelcomeHandler)
 	r.HandleFunc("/health", api.HealthCheckHandler)
@@ -50,6 +55,5 @@ func main() {
 
 	r.HandleFunc("/init_test_fixtures", api.InitTestFixturesHandler).Methods("POST") // for test purposes
 
-	fmt.Println("Start listening to localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	return r
 }
