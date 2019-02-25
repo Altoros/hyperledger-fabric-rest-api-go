@@ -1,27 +1,21 @@
 package main
 
 import (
+	"fabric-rest-api-go/api"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-
-	"fabricRestApiGo/api"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
 	api.FscInstance = api.FabricSdkClient{
-		// Chaincode parameters
-		GOPATH:        os.Getenv("GOPATH"),
-		ChaincodePath: "fabricRestApiGo/chaincode/",
-
 		// Org parameters
-		OrgAdmin:      "Admin",
-		OrgName:       "org1",
+		OrgAdmin: "Admin",
+		OrgName:  "org1",
 
-		ConfigFile:    "test/config.yaml",
+		ConfigFile: "test/config.yaml",
 
 		// User parameters
 		UserName: "User1",

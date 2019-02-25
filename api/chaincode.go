@@ -15,7 +15,7 @@ import (
 
 func (fsc *FabricSdkClient) InstalledChaincodes() (string, error) {
 
-	queryInstalledChaincodesResponse, err := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(fsc.getFirstPeer()))
+	queryInstalledChaincodesResponse, err := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(fsc.GetCurrentPeer()))
 	installedChaincodes := queryInstalledChaincodesResponse.GetChaincodes()
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (fsc *FabricSdkClient) InstalledChaincodes() (string, error) {
 
 func (fsc *FabricSdkClient) InstantiatedChaincodes(channelId string) (string, error) {
 
-	queryInstantiatedChaincodesResponse, err := fsc.admin.QueryInstantiatedChaincodes(channelId, resmgmt.WithTargets(fsc.getFirstPeer()))
+	queryInstantiatedChaincodesResponse, err := fsc.admin.QueryInstantiatedChaincodes(channelId, resmgmt.WithTargets(fsc.GetCurrentPeer()))
 
 	if err != nil {
 		return "", err
@@ -44,14 +44,14 @@ func (fsc *FabricSdkClient) ChaincodeInfo(channelId, chainCodeId string) (string
 	args = append(args, []byte(channelId))
 	args = append(args, []byte(chainCodeId))
 
-	client, err := fsc.channelClient("chainhero")
+	client, err := fsc.ChannelClient("chainhero")
 	if err != nil {
 		return "", fmt.Errorf("failed to create channel client: %v", err)
 	}
 
 	response, err := client.Query(
 		channel.Request{ChaincodeID: "lscc", Fcn: "getccdata", Args: args},
-		channel.WithTargetEndpoints(fsc.getFirstPeer().URL()),
+		channel.WithTargetEndpoints(fsc.GetCurrentPeer().URL()),
 	)
 	if err != nil {
 		return "", errors.Errorf("error querying for chaincode info: %v", err)

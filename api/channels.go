@@ -9,7 +9,7 @@ import (
 )
 
 func (fsc *FabricSdkClient) Channels() (string, error) {
-	response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.getFirstPeer()))
+	response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
 	if err != nil {
 		return "", err
 	}
@@ -26,7 +26,7 @@ func (fsc *FabricSdkClient) ChannelInfo(channelId string) (string, error) {
 
 	// TODO implement
 	panic("not implemented")
-	/*response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.getFirstPeer()))
+	/*response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
 	if err != nil {
 		return "", err
 	}

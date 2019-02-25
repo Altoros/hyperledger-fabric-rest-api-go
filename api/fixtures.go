@@ -5,7 +5,6 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
-	"github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl"
 	"github.com/pkg/errors"
 )
@@ -16,11 +15,13 @@ func (fsc *FabricSdkClient) InitTestFixturesHandler() error {
 	testChannelId := "chainhero"
 	testChaincodeName := "heroes-service"
 	channelConfigTx := "./test/fixtures/artifacts/chainhero.channel.tx"
-	testOrdererId :=  "orderer.hf.chainhero.io"
+	testOrdererId := "orderer.hf.chainhero.io"
+	chaincodePath := "./chaincode"
+	projectName := "project"
 
 	ordererEndPoint := resmgmt.WithOrdererEndpoint(testOrdererId)
 
-	response, _ := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.getFirstPeer()))
+	response, _ := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
 	channels := response.GetChannels()
 
 	channelExist := false
@@ -45,7 +46,7 @@ func (fsc *FabricSdkClient) InitTestFixturesHandler() error {
 		fmt.Println("Channel joined")
 	}
 
-	queryInstalledChaincodesResponse, _ := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(fsc.getFirstPeer()))
+	queryInstalledChaincodesResponse, _ := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(fsc.GetCurrentPeer()))
 	installedChaincodes := queryInstalledChaincodesResponse.GetChaincodes()
 
 	chaincodeExists := false
@@ -58,14 +59,16 @@ func (fsc *FabricSdkClient) InitTestFixturesHandler() error {
 	if !chaincodeExists {
 
 		// Create the chaincode package that will be sent to the peers
-		ccPkg, err := gopackager.NewCCPackage(fsc.ChaincodePath, fsc.GOPATH)
+		ccPkg, err := CCPackage(chaincodePath, projectName)
 		if err != nil {
 			return errors.WithMessage(err, "failed to create chaincode package")
 		}
 		fmt.Println("ccPkg created")
 
+		// TODO research path usage inside peer, seems like it is only comment of some kind
 		// Install example cc to org peers
-		installCCReq := resmgmt.InstallCCRequest{Name: testChaincodeName, Path: fsc.ChaincodePath, Version: "0", Package: ccPkg}
+		installCCReq := resmgmt.InstallCCRequest{Name: testChaincodeName, Path: projectName  + "/chaincode/", Version: "0", Package: ccPkg}
+
 		_, err = fsc.admin.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 		if err != nil {
 			return errors.WithMessage(err, "failed to install chaincode")
@@ -75,7 +78,8 @@ func (fsc *FabricSdkClient) InitTestFixturesHandler() error {
 		// Set up chaincode policy
 		ccPolicy := cauthdsl.SignedByAnyMember([]string{"org1.hf.chainhero.io"})
 
-		resp, err := fsc.admin.InstantiateCC(testChannelId, resmgmt.InstantiateCCRequest{Name: testChaincodeName, Path: fsc.GOPATH, Version: "0", Args: [][]byte{[]byte("init")}, Policy: ccPolicy})
+		// TODO find out, seems like Path is redundant
+		resp, err := fsc.admin.InstantiateCC(testChannelId, resmgmt.InstantiateCCRequest{Name: testChaincodeName, Path: "chaincode", Version: "0", Args: [][]byte{[]byte("init")}, Policy: ccPolicy})
 		if err != nil || resp.TransactionID == "" {
 			return errors.WithMessage(err, "failed to instantiate the chaincode")
 		}

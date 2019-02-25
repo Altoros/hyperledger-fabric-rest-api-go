@@ -1,8 +1,8 @@
 ### Local test instructions
 
-Put in code in ~/go/src/fabricRestApiGo
+Put in code in ~/go/src/fabric-rest-api-go
 ```
-cd ~/go/src/fabricRestApiGo
+cd ~/go/src/fabric-rest-api-go
 go get
 go run main.go
 ```

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fabricRestApiGo/notifications"
+	"fabric-rest-api-go/notifications"
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/event"
@@ -21,23 +21,19 @@ type FabricSdkClient struct {
 	ConfigFile string
 	OrgID      string
 
-	initialized   bool
-	// ChannelConfig string
-	GOPATH        string
-	ChaincodePath string // TODO remove
-	OrgAdmin      string
-	OrgName       string
-	UserName      string
-	//channelClient *channel.Client
+	initialized bool
+
+	OrgAdmin string
+	OrgName  string
+	UserName string
+
 	admin *resmgmt.Client
 	sdk   *fabsdk.FabricSDK
-	// event *event.Client
 
 	adminIdentity msp.SigningIdentity
 
 	allPeersByOrg map[string][]fab.Peer
 	allPeers      []fab.Peer
-	//installedChaincodes []*peer.ChaincodeInfo
 }
 
 // Initialize reads the configuration file and sets up the client, chain and event hub
@@ -203,7 +199,12 @@ func (fsc *FabricSdkClient) createEventsListeners(channelId, chaincodeId string)
 	return nil
 }
 
-func (fsc *FabricSdkClient) channelClient(channelId string) (*channel.Client, error) {
+
+type ChannelClientProvider interface {
+	ChannelClient(string) (*channel.Client, error)
+}
+
+func (fsc *FabricSdkClient) ChannelClient(channelId string) (*channel.Client, error) {
 	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
 
 	client, err := channel.New(chProvider)
@@ -227,6 +228,7 @@ func (fsc *FabricSdkClient) eventClient(channelId string) (*event.Client, error)
 	return eventClient, nil
 }
 
-func (fsc *FabricSdkClient) getFirstPeer() fab.Peer {
+func (fsc *FabricSdkClient) GetCurrentPeer() fab.Peer {
+	// TODO replace with actually current peer
 	return fsc.allPeers[0]
 }
