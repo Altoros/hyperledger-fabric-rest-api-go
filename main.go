@@ -1,14 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fabric-rest-api-go/api"
+	"flag"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"log"
 	"net/http"
-
-	"encoding/json"
-	"github.com/gorilla/mux"
 	"os"
 )
 
@@ -40,8 +40,11 @@ func LoadConfiguration(file string) (*ApiConfig, error) {
 
 func main() {
 
-	// TODO support set config path by command line option
-	config, err := LoadConfiguration("./config.json")
+	var apiConfigPath string
+	flag.StringVar(&apiConfigPath, "config", "./config.json", "Path to API configuration file, (example: ./config.json)")
+	flag.Parse()
+
+	config, err := LoadConfiguration(apiConfigPath)
 	if err != nil {
 		panic(err)
 	}
