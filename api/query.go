@@ -9,7 +9,7 @@ import (
 func Query(channelClientProvider ChannelClientProvider, peer fab.Peer, channelId, chaincodeId, fcn string, args []string) (string, error) {
 
 	// Prepare arguments
-	requestArgs := [][]byte{[]byte(fcn)}
+	var requestArgs [][]byte
 	for _, arg := range args {
 		requestArgs = append(requestArgs, []byte(arg))
 	}
@@ -20,7 +20,7 @@ func Query(channelClientProvider ChannelClientProvider, peer fab.Peer, channelId
 	}
 
 	response, err := client.Query(
-		channel.Request{ChaincodeID: chaincodeId, Fcn: "invoke", Args: requestArgs},
+		channel.Request{ChaincodeID: chaincodeId, Fcn: fcn, Args: requestArgs},
 		channel.WithTargets(peer),
 	)
 	if err != nil {

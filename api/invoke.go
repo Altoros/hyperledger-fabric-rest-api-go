@@ -8,7 +8,7 @@ import (
 func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args []string) (string, error) {
 
 	// Prepare arguments
-	requestArgs := [][]byte{[]byte(fcn)}
+	var requestArgs [][]byte
 	for _, arg := range args {
 		requestArgs = append(requestArgs, []byte(arg))
 	}
@@ -39,7 +39,7 @@ func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args 
 	}
 
 	// Create a request (proposal) and send it
-	response, err := client.Execute(channel.Request{ChaincodeID: chaincodeId, Fcn: "invoke", Args: requestArgs, TransientMap: transientDataMap})
+	response, err := client.Execute(channel.Request{ChaincodeID: chaincodeId, Fcn: fcn, Args: requestArgs, TransientMap: transientDataMap})
 	if err != nil {
 		return "", fmt.Errorf("failed to move funds: %v", err)
 	}
