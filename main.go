@@ -3,16 +3,16 @@ package main
 import (
 	"fabric-rest-api-go/api"
 	"fmt"
+	"github.com/pkg/errors"
 	"log"
 	"net/http"
 
-	"os"
-	"github.com/alexdnn11/fabric-rest-go/api"
-	"github.com/gorilla/mux"
 	"encoding/json"
+	"github.com/gorilla/mux"
+	"os"
 )
 
-type Config struct {
+type ApiConfig struct {
 	Org struct {
 		Admin string `json:"admin"`
 		Name  string `json:"name"`
@@ -20,43 +20,44 @@ type Config struct {
 	User struct {
 		Name string `json:"name"`
 	} `json:"user"`
-	Gopath        string `json:"gopath"`
-	ChaincodePath string `json:"chaincodePath"`
-	ConfigFile    string `json:"configPath"`
+	ConfigPath string `json:"configPath"`
 }
 
-func LoadConfiguration(file string) Config {
-	var config Config
+func LoadConfiguration(file string) (*ApiConfig, error) {
+	var config *ApiConfig
 	configFile, err := os.Open(file)
 	defer configFile.Close()
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, errors.WithMessage(err, "Unable to open configuration file")
 	}
 	jsonParser := json.NewDecoder(configFile)
-	jsonParser.Decode(&config)
-	return config
+	err = jsonParser.Decode(&config)
+	if err != nil {
+		return nil, errors.WithMessage(err, "Unable to parse configuration file JSON")
+	}
+	return config, nil
 }
 
 func main() {
 
-	config := LoadConfiguration("./config.json")
+	// TODO support set config path by command line option
+	config, err := LoadConfiguration("./config.json")
+	if err != nil {
+		panic(err)
+	}
 
 	api.FscInstance = api.FabricSdkClient{
-		// Chaincode parameters
-		GOPATH:        os.Getenv(config.Gopath),
-		ChaincodePath: config.ChaincodePath,
-
 		// Org parameters
 		OrgAdmin: config.Org.Admin,
 		OrgName:  config.Org.Name,
 
-		ConfigFile: config.ConfigFile,
+		ConfigFile: config.ConfigPath,
 
 		// User parameters
 		UserName: config.User.Name,
 	}
 
-	err := api.FscInstance.Initialize()
+	err = api.FscInstance.Initialize()
 	if err != nil {
 		panic(err)
 	}
