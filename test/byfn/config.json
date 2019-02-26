@@ -1,10 +1,10 @@
 {
   "org": {
     "admin": "Admin",
-    "name": "org1"
+    "name": "Org1"
   },
   "user": {
     "name": "User1"
   },
-  "configPath": "./test/config.yaml"
+  "configPath": "./test/byfn/config.yaml"
 }

@@ -2,7 +2,8 @@
 
 Requirements:
 * https://hyperledger-fabric.readthedocs.io/en/release-1.4/install.html
-* Golang 11.0 
+* https://github.com/hyperledger/fabric-sdk-go
+* Go 1.11 
 
 Put in code in ~/go/src/fabric-rest-api-go
 ```
@@ -19,7 +20,7 @@ make clear
 
 ### Basic network test
 
-Start local network
+Start local basic test network
 ```
 make basic_up
 ```
@@ -30,7 +31,7 @@ To create and install/instantiate chaincode do POST request to
 
 Postman collection
 
-*/test/FabricApi.postman_collection.json* 
+*/test/FabricApiBasic.postman_collection.json* 
 
 
 ### BYFN test

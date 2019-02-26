@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fabric-rest-api-go/api"
+	"fabric-rest-api-go/pkg/api"
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -41,7 +41,7 @@ func LoadConfiguration(file string) (*ApiConfig, error) {
 func main() {
 
 	var apiConfigPath string
-	flag.StringVar(&apiConfigPath, "config", "./config.json", "Path to API configuration file, (example: ./config.json)")
+	flag.StringVar(&apiConfigPath, "config", "./configs/config.json", "Path to API configuration file, (example: ./config.json)")
 	flag.Parse()
 
 	config, err := LoadConfiguration(apiConfigPath)

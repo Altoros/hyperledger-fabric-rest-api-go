@@ -9,16 +9,19 @@ import (
 	"github.com/pkg/errors"
 )
 
+// TODO remove all testing fixed data
+
+const (
+	testChannelId     = "chainhero"
+	testChaincodeName = "heroes-service"
+	channelConfigTx   = "./test/basic/fixtures/artifacts/chainhero.channel.tx"
+	testOrdererId     = "orderer.hf.chainhero.io"
+	chaincodePath     = "./chaincode"
+	projectName       = "project"
+)
+
 // Create test channel, install and instantiate test chaincode
-func (fsc *FabricSdkClient) InitTestFixturesHandler() error {
-
-	testChannelId := "chainhero"
-	testChaincodeName := "heroes-service"
-	channelConfigTx := "./test/fixtures/artifacts/chainhero.channel.tx"
-	testOrdererId := "orderer.hf.chainhero.io"
-	chaincodePath := "./chaincode"
-	projectName := "project"
-
+func (fsc *FabricSdkClient) InitBasicTestFixturesHandler() error {
 	ordererEndPoint := resmgmt.WithOrdererEndpoint(testOrdererId)
 
 	response, _ := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
@@ -67,7 +70,7 @@ func (fsc *FabricSdkClient) InitTestFixturesHandler() error {
 
 		// TODO research path usage inside peer, seems like it is only comment of some kind
 		// Install example cc to org peers
-		installCCReq := resmgmt.InstallCCRequest{Name: testChaincodeName, Path: projectName  + "/chaincode/", Version: "0", Package: ccPkg}
+		installCCReq := resmgmt.InstallCCRequest{Name: testChaincodeName, Path: projectName + "/chaincode/", Version: "0", Package: ccPkg}
 
 		_, err = fsc.admin.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 		if err != nil {

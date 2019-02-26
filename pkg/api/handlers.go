@@ -169,7 +169,7 @@ func PostInvokeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Create test channel, install and instantiate test chaincode
 func InitTestFixturesHandler(w http.ResponseWriter, _ *http.Request) {
-	err := FscInstance.InitTestFixturesHandler()
+	err := FscInstance.InitBasicTestFixturesHandler()
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)

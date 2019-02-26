@@ -70,7 +70,6 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     command: peer node start
     volumes:
-      # - ${HOME}/go/src/github.com/hyperledger/fabric/.build/bin:/usr/local/bin
       - /var/run/:/host/var/run/
       - ./crypto-config/peerOrganizations/org1.hf.chainhero.io/peers/peer0.org1.hf.chainhero.io/msp:/var/hyperledger/msp
       - ./crypto-config/peerOrganizations/org1.hf.chainhero.io/peers/peer0.org1.hf.chainhero.io/tls:/var/hyperledger/tls

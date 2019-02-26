@@ -23,7 +23,7 @@ echo "**************************************************************************
 echo "===================== Start API testing against BYFN ======================"
 echo "Start API testing against BYFN"
 
-./build/rest-api -config=./test/config_byfn.json > /dev/null &
+./build/frag -config=./test/byfn/config.json > /dev/null &
 REST_PID=$!
 
 echo "Starting REST API, PID = {$REST_PID}"

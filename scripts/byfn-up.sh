@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-cd test
+echo "Preparing BYFN network ..."
+
+cd test/byfn
 
 if [ ! -d "fabric-samples" ]; then
     echo "Cloning https://github.com/hyperledger/fabric-samples@release-1.4 into ./test/fabric-samples"
