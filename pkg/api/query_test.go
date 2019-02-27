@@ -1,7 +1,7 @@
 package api
 
 import (
-	"fabric-rest-api-go/api/mock_api"
+	"fabric-rest-api-go/pkg/api/mock_api"
 	"github.com/golang/mock/gomock"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	txnmocks "github.com/hyperledger/fabric-sdk-go/pkg/client/common/mocks"

@@ -1,13 +1,25 @@
+# Fabric REST API Go
+
+REST control system for [Hyperledger Fabric](https://www.hyperledger.org/projects/fabric) network.
+
+Features
+* Invoke and query chaincode
+* Chaincode detailed info
+* Channels list
+* Channel peers
+* ...
+
 ## Local test instructions
 
 Requirements:
 * https://hyperledger-fabric.readthedocs.io/en/release-1.4/install.html
 * https://github.com/hyperledger/fabric-sdk-go
-* Go 1.11 
+* Go 1.12 
 
-Put in code in ~/go/src/fabric-rest-api-go
+Clone repo outside GOPATH in order to go module work correctly.
+
+Build and run
 ```
-cd ~/go/src/fabric-rest-api-go
 make run
 ```
 
@@ -39,7 +51,7 @@ Postman collection
 Additional requirements:
 * [qj](https://stedolan.github.io/jq/) command-line JSON processor
 
-Run integration tests against BYFN
+Run E2E tests against BYFN
 ```
 make byfn
 ```
@@ -48,10 +60,21 @@ Postman collection
 
 */test/FabricApiBYFN.postman_collection.json*
 
+## Work progress 
 
-#### Close plans
+### Close plans
 
-* Test with BYFN
-* Cover code with unit test
-* Create full integration test with BYFN, makefile and shell scripts
+* Create Dockerfile
+* Test docker container inside testnet 
+
+### Strategic plans
+
 * Automate postman collections tests with Newman
+* Test with BYFN (partially done)
+* Create full integration test with BYFN, makefile and shell scripts (partially done)
+* Cover code with unit test (partially done)
+* Move configuration to ENV variables
+* Channels creation
+* Chaincode installation & instantiation 
+* Organisations and users management 
+

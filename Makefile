@@ -38,7 +38,7 @@ run: build
 
 ##### UNTI TEST
 test:
-	@go test . ./api... ./notifications...
+	@go test ./pkg... ./cmd...
 
 ##### CLEAR ALL
 clear: basic_clear byfn_clear
@@ -72,4 +72,4 @@ byfn_test: build
 byfn_clear:
 	@./scripts/byfn-clear.sh
 
-byfn: clear byfn_up byfn_test byfn_clear
+byfn: byfn_up byfn_test byfn_clear

@@ -209,9 +209,9 @@ func (fsc *FabricSdkClient) ChannelClient(channelId string) (*channel.Client, er
 }
 
 func (fsc *FabricSdkClient) eventClient(channelId string) (*event.Client, error) {
-	clientContext := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
+	channelProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
 
-	eventClient, err := event.New(clientContext)
+	eventClient, err := event.New(channelProvider)
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed to create new event client")
 	}

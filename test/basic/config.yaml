@@ -236,4 +236,6 @@ channels:
   chainhero:
     peers:
       peer0.org1.hf.chainhero.io:
+        eventSource: true
       peer1.org1.hf.chainhero.io:
+        eventSource: true
