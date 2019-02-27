@@ -73,3 +73,13 @@ byfn_clear:
 	@./scripts/byfn-clear.sh
 
 byfn: byfn_up byfn_test byfn_clear
+
+##### Docker
+docker_build:
+	@docker build -t frag .
+
+docker_run:
+	@docker run --name frag --network host -d frag:latest
+
+docker_clear:
+	docker stop frag && docker rm frag
