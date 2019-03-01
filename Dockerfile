@@ -1,14 +1,21 @@
 # Stage 1 - building app
 
 FROM golang:1.12-alpine3.9 AS build
-RUN go version
-
-COPY . /src/
-WORKDIR /src/
 
 RUN apk add --no-cache make git
 
+WORKDIR /src/
+
+# download modules in separated layer, to speed up rebuild by utilising Docker layer caching system
+COPY go.mod .
+COPY go.sum .
+# NOTE: build error may occur due to temporary unavailability of some packages sources
+# Wait and build again is usually a good solution
+RUN go mod download
+
+COPY . /src/
 RUN make build
+
 
 # Stage 2 - serving app
 
@@ -18,8 +25,7 @@ RUN adduser -S -D -H -h /app appuser
 USER appuser
 
 WORKDIR /app/
-COPY --from=build /src/configs/ configs/
-COPY --from=build /src/test/ test/
+
 COPY --from=build /src/build/frag .
 
 EXPOSE 8080
