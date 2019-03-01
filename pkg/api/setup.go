@@ -19,10 +19,10 @@ var FscInstance FabricSdkClient
 // FabricSdkClient implementation
 type FabricSdkClient struct {
 	ConfigFile string
-	OrgID      string
 
 	initialized bool
 
+	OrgID    string
 	OrgAdmin string
 	OrgName  string
 	UserName string
@@ -190,7 +190,6 @@ func (fsc *FabricSdkClient) createEventsListeners(channelId, chaincodeId string)
 
 	return nil
 }
-
 
 type ChannelClientProvider interface {
 	ChannelClient(string) (*channel.Client, error)

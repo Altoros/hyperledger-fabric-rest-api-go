@@ -40,8 +40,11 @@ func LoadConfiguration(file string) (*ApiConfig, error) {
 
 func main() {
 
+	// TODO merge config files
 	var apiConfigPath string
-	flag.StringVar(&apiConfigPath, "config", "./configs/config.json", "Path to API configuration file, (example: ./config.json)")
+	var sdkConfigPath string
+	flag.StringVar(&apiConfigPath, "api-config", "./configs/config.json", "Path to API configuration file (example: -api-config=./config.json)")
+	flag.StringVar(&sdkConfigPath, "sdk-config", "./configs/config.yaml", "Path to SDK configuration file (example: -sdk-config=./config.yaml)")
 	flag.Parse()
 
 	config, err := LoadConfiguration(apiConfigPath)
@@ -50,11 +53,11 @@ func main() {
 	}
 
 	api.FscInstance = api.FabricSdkClient{
+		ConfigFile: sdkConfigPath,
+
 		// Org parameters
 		OrgAdmin: config.Org.Admin,
 		OrgName:  config.Org.Name,
-
-		ConfigFile: config.ConfigPath,
 
 		// User parameters
 		UserName: config.User.Name,
