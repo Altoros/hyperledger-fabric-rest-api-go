@@ -1,7 +1,7 @@
 {
   "org": {
     "admin": "Admin",
-    "name": "Org1"
+    "name": "org1"
   },
   "user": {
     "name": "User1"

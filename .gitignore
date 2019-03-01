@@ -1,5 +1,5 @@
 .idea
 .directory
 vendor
-test/byfn/fabric-samples
+test/fabric-samples
 build

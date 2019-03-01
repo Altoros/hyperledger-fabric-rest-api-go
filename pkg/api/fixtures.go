@@ -12,10 +12,10 @@ import (
 // TODO remove all testing fixed data
 
 const (
-	testChannelId     = "chainhero"
-	testChaincodeName = "heroes-service"
-	channelConfigTx   = "./test/basic/fixtures/artifacts/chainhero.channel.tx"
-	testOrdererId     = "orderer.hf.chainhero.io"
+	testChannelId     = "mychannel"
+	testChaincodeName = "mycc"
+	channelConfigTx   = "./test/fabric-samples/basic-network/config/channel.tx"
+	testOrdererId     = "orderer.example.com"
 	chaincodePath     = "./chaincode"
 	projectName       = "project"
 )
@@ -72,14 +72,19 @@ func (fsc *FabricSdkClient) InitBasicTestFixturesHandler() error {
 		// Install example cc to org peers
 		installCCReq := resmgmt.InstallCCRequest{Name: testChaincodeName, Path: projectName + "/chaincode/", Version: "0", Package: ccPkg}
 
-		_, err = fsc.admin.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
+		installCcResponses, err := fsc.admin.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 		if err != nil {
 			return errors.WithMessage(err, "failed to install chaincode")
+		}
+
+		fmt.Println("Peers responses in install request")
+		for _, installCcResponse := range installCcResponses {
+			fmt.Printf("Info: %s  Target: %s  Status %d\n", installCcResponse.Info, installCcResponse.Target, installCcResponse.Status)
 		}
 		fmt.Println("Chaincode installed")
 
 		// Set up chaincode policy
-		ccPolicy := cauthdsl.SignedByAnyMember([]string{"org1.hf.chainhero.io"})
+		ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
 
 		// TODO find out, seems like Path is redundant
 		resp, err := fsc.admin.InstantiateCC(testChannelId, resmgmt.InstantiateCCRequest{Name: testChaincodeName, Path: "chaincode", Version: "0", Args: [][]byte{[]byte("init")}, Policy: ccPolicy})

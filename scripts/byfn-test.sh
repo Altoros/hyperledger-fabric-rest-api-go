@@ -23,7 +23,7 @@ echo "**************************************************************************
 echo "===================== Start API testing against BYFN ======================"
 echo "Start API testing against BYFN"
 
-./build/frag -config=./test/byfn/config.json > /dev/null &
+./build/frag -api-config=./test/byfn/config.json -sdk-config=./test/byfn/config.yaml > /dev/null &
 REST_PID=$!
 
 echo "Starting REST API, PID = {$REST_PID}"
@@ -35,6 +35,8 @@ WELCOME_RESULT=$(curl -s -X GET 'localhost:8080')
 echo "Test query"
 QUERY_RESULT_1=$(curl -s -X GET 'localhost:8080/channels/mychannel/chaincodes/mycc/query?fcn=query&args=a' | jq -r '.result')
 QUERY_RESULT_2=$(curl -s -X GET 'localhost:8080/channels/mychannel/chaincodes/mycc/query?fcn=query&args=b' | jq -r '.result')
+
+echo "==${WELCOME_RESULT} ${QUERY_RESULT_1}=="
 
 assertEqual ${QUERY_RESULT_1} "90" "Balance A should be equal to 90"
 assertEqual ${QUERY_RESULT_2} "210" "Balance B should be equal to 210"

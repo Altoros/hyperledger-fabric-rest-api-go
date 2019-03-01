@@ -1,4 +1,5 @@
 .PHONY: all dev basic_clear build basic_up basic_down run test basic_restart byfn_up byfn_test byfn_clear byfn clear
+.PHONY: docker_build docker_up docker_restart docker_clear
 
 help:
 	@echo "Fabric REST API GoLang"
@@ -36,7 +37,7 @@ run: build
 	@echo "Start app ..."
 	@./build/frag
 
-##### UNTI TEST
+##### UNIT TESTS
 test:
 	@go test ./pkg... ./cmd...
 
@@ -46,21 +47,20 @@ clear: basic_clear byfn_clear
 ##### BASIC NETWORK testing
 basic_up:
 	@echo "Starting basic network ..."
-	@cd test/basic/fixtures && docker-compose up --force-recreate -d
+	@./scripts/basic-up.sh
 	@echo "Basic network up"
 
 basic_down:
 	@echo "Stoping basic network ..."
-	@cd test/basic/fixtures && docker-compose down
+	@./scripts/basic-down.sh
 	@echo "Basic network down"
-
-basic_restart: basic_clear basic_up
 
 basic_clear: basic_down
 	@echo "Clean up basic network ..."
-	@docker rm -f -v `docker ps -a --no-trunc | grep "heroes-service" | cut -d ' ' -f 1` 2>/dev/null || true
-	@docker rmi `docker images --no-trunc | grep "heroes-service" | cut -d ' ' -f 1` 2>/dev/null || true
+	@./scripts/basic-clear.sh
 	@echo "Clean up done"
+
+basic_restart: basic_clear basic_up
 
 ##### BYFN testing
 byfn_up:
@@ -76,10 +76,13 @@ byfn: byfn_up byfn_test byfn_clear
 
 ##### Docker
 docker_build:
-	@docker build -t frag .
+	@docker build -t frag:dev .
 
-docker_run:
-	@docker run --name frag --network host -d frag:latest
+docker_up:
+	@./scripts/basic-docker-up.sh
+
+docker_restart: docker_clear docker_up
 
 docker_clear:
-	docker stop frag && docker rm frag
+	@docker stop frag
+	@docker rm frag

@@ -76,7 +76,7 @@ organizations:
 #
 orderers:
   orderer.example.com:
-    url: localhost:7050
+    url: orderer.example.com:7050
 
     # these are standard properties defined by the gRPC library
     # they will be passed in as-is to gRPC client constructor
@@ -102,9 +102,9 @@ orderers:
 peers:
   peer0.org1.example.com:
     # this URL is used to send endorsement and query requests
-    url: localhost:7051
+    url: peer0.org1.example.com:7051
     # eventUrl is only needed when using eventhub (default is delivery service)
-    eventUrl: localhost:7053
+    eventUrl: peer0.org1.example.com:7053
 
     grpcOptions:
       ssl-target-name-override: peer0.org1.example.com
@@ -129,7 +129,7 @@ peers:
 #
 certificateAuthorities:
   ca.org1.example.com:
-    url: http://localhost:7054
+    url: http://ca.org1.example.com:7054
     # Fabric-CA supports dynamic user enrollment via REST APIs. A "root" user, a.k.a registrar, is
     # needed to enroll and invoke new users.
     httpOptions:
@@ -146,20 +146,20 @@ certificateAuthorities:
 entityMatchers:
   peer:
     - pattern: (\w*)peer0.org1.example.com(\w*)
-      urlSubstitutionExp: localhost:7051
-      eventUrlSubstitutionExp: localhost:7053
+      urlSubstitutionExp: peer0.org1.example.com:7051
+      eventUrlSubstitutionExp: peer0.org1.example.com:7053
       sslTargetOverrideUrlSubstitutionExp: peer0.org1.example.com
       mappedHost: peer0.org1.example.com
 
   orderer:
     - pattern: (\w*)orderer.example.com(\w*)
-      urlSubstitutionExp: localhost:7050
+      urlSubstitutionExp: orderer.example.com:7050
       sslTargetOverrideUrlSubstitutionExp: orderer.example.com
       mappedHost: orderer.example.com
 
   certificateAuthorities:
     - pattern: (\w*)ca.org1.example.com(\w*)
-      urlSubstitutionExp: http://localhost:7054
+      urlSubstitutionExp: http://ca.org1.example.com:7054
       mappedHost: ca.org1.example.com
 
 
