@@ -1,0 +1,9 @@
+{
+  "org": {
+    "admin": "Admin",
+    "name": "Org1"
+  },
+  "user": {
+    "name": "User1"
+  }
+}

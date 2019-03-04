@@ -2,7 +2,7 @@
 
 echo "Preparing BYFN network ..."
 
-. /scripts/fabric-samples.sh
+. ./scripts/fabric-samples.sh
 
 cloneFabricSamples
 

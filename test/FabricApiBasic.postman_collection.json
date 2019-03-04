@@ -1,12 +1,30 @@
 {
 	"info": {
 		"_postman_id": "fe4bb834-207b-4c1a-b792-fbc0c9cbee5c",
-		"name": "FabricApi",
+		"name": "FabricApi Basic network",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Welcome",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "554681af-3c25-4bef-8bd9-eb17f20ec0d8",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Welcome message\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Fabric REST Api\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -15,17 +33,76 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080",
+					"raw": "{{host}}",
 					"host": [
-						"localhost"
+						"{{host}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "InitTestFixtures",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "89a3dad8-11b7-4316-b6bd-ef0563570580",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Test fixtures created\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.message).to.eql(\"Test channel created, chaincode installed and instantiated\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/init_test_fixtures",
+					"host": [
+						"{{host}}"
 					],
-					"port": "8080"
+					"path": [
+						"init_test_fixtures"
+					]
 				}
 			},
 			"response": []
 		},
 		{
 			"name": "Chaincodes Installed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "46ff1609-d389-49eb-a2bc-44a5ffebfe4b",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Chaincode name correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].name).to.eql(pm.variables.get(\"cc\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -34,11 +111,10 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/chaincodes/installed",
+					"raw": "{{host}}/chaincodes/installed",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"chaincodes",
 						"installed"
@@ -49,6 +125,26 @@
 		},
 		{
 			"name": "Chaincodes Instantiated",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "78d079aa-d971-4040-9aeb-7702a405d703",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Chaincode name correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].name).to.eql(pm.variables.get(\"cc\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -57,14 +153,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/instantiated",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/instantiated",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"{{ch}}",
 						"chaincodes",
 						"instantiated"
 					]
@@ -74,6 +169,26 @@
 		},
 		{
 			"name": "Chaincode Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d9a283fd-80dc-49a0-9baa-9098b677c864",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Chaincode name correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.name).to.eql(pm.variables.get(\"cc\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -82,16 +197,15 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/info",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/info",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"{{ch}}",
 						"chaincodes",
-						"heroes-service",
+						"{{cc}}",
 						"info"
 					]
 				}
@@ -100,6 +214,26 @@
 		},
 		{
 			"name": "Channels",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5ab323b-c6e2-4465-9073-18c4f9720e8a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Channel name correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].channel_id).to.eql(pm.variables.get(\"ch\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -108,11 +242,10 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels",
+					"raw": "{{host}}/channels",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels"
 					]
@@ -122,6 +255,21 @@
 		},
 		{
 			"name": "Channel info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13c4684c-366c-4ec0-ba37-76f2297f9327",
+						"exec": [
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -130,14 +278,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero",
+					"raw": "{{host}}/channels/{{ch}}",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero"
+						"{{ch}}"
 					]
 				}
 			},
@@ -145,6 +292,21 @@
 		},
 		{
 			"name": "Channel orgs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "259f963a-852d-4112-acdb-3dc9f0f41391",
+						"exec": [
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -153,14 +315,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/orgs",
+					"raw": "{{host}}/channels/{{ch}}/orgs",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"{{ch}}",
 						"orgs"
 					]
 				}
@@ -169,6 +330,27 @@
 		},
 		{
 			"name": "Channel peers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0115379b-6b00-458a-acdd-9f4c7ceeecab",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Channel MSP correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.Peers.length).to.eql(1);",
+							"    pm.expect(jsonData.Peers[0].MSP).to.eql(\"Org1MSP\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -177,14 +359,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/peers",
+					"raw": "{{host}}/channels/{{ch}}/peers",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"{{ch}}",
 						"peers"
 					]
 				}
@@ -192,29 +373,27 @@
 			"response": []
 		},
 		{
-			"name": "InitTestFixtures",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "localhost:8080/init_test_fixtures",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"init_test_fixtures"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "QueryChaincode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6dd7da90-6e43-459f-b3c5-7edd92eef9d6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Query result is 'world'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.eql(\"world\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -223,16 +402,15 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/query?fcn=invoke&args=query,hello",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=invoke&args=query,hello",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"{{ch}}",
 						"chaincodes",
-						"heroes-service",
+						"{{cc}}",
 						"query"
 					],
 					"query": [
@@ -243,11 +421,6 @@
 						{
 							"key": "args",
 							"value": "query,hello"
-						},
-						{
-							"key": "args[]",
-							"value": "dolly",
-							"disabled": true
 						}
 					]
 				}
@@ -256,6 +429,26 @@
 		},
 		{
 			"name": "InvokeChaincode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f7a8edb6-2eeb-41ee-9b41-4779106a3d95",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Invoke returns correct response\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result.length).to.eql(64);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -270,16 +463,15 @@
 					]
 				},
 				"url": {
-					"raw": "localhost:8080/channels/chainhero/chaincodes/heroes-service/invoke?fcn=invoke&args=invoke,hello,42",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/invoke?fcn=invoke&args=invoke,hello,42",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8080",
 					"path": [
 						"channels",
-						"chainhero",
+						"{{ch}}",
 						"chaincodes",
-						"heroes-service",
+						"{{cc}}",
 						"invoke"
 					],
 					"query": [
@@ -295,6 +487,103 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "QueryChaincode 42 test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "47da3727-ae23-44d4-960c-f0da0fd25ce7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Query result is 42\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result).to.eql(\"42\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=invoke&args=query,hello",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"channels",
+						"{{ch}}",
+						"chaincodes",
+						"{{cc}}",
+						"query"
+					],
+					"query": [
+						{
+							"key": "fcn",
+							"value": "invoke"
+						},
+						{
+							"key": "args",
+							"value": "query,hello"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f4809493-4c49-4e72-aea6-887a586f1299",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b939f1a2-96e0-4258-badb-931f1861c569",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "6414eee2-2033-4eea-9b85-7439d440bedc",
+			"key": "ch",
+			"value": "mychannel",
+			"type": "string"
+		},
+		{
+			"id": "e301185e-7954-4c42-9adf-a450e69e91e3",
+			"key": "cc",
+			"value": "mycc",
+			"type": "string"
+		},
+		{
+			"id": "9bb6fb18-3a67-4630-b470-18d67398e257",
+			"key": "host",
+			"value": "localhost:8080",
+			"type": "string"
 		}
 	]
 }

@@ -25,6 +25,12 @@ make run
 
 *NOTE: only one test network could be up at the same time*
 
+Run all unit and end-2-end tests
+
+```
+make test
+```
+
 Stop and clear all test networks
 ```
 make clear
@@ -40,6 +46,10 @@ make basic_up
 To create and install/instantiate chaincode do POST request to 
 *localhost:8080/init_test_fixtures*
  
+Run E2E tests against Basic network
+```
+make basic_e2e_test
+```
 
 Postman collection
 
@@ -51,9 +61,14 @@ Postman collection
 Additional requirements:
 * [qj](https://stedolan.github.io/jq/) command-line JSON processor
 
+Start local basic test network
+```
+make byfn_up
+```
+
 Run E2E tests against BYFN
 ```
-make byfn
+make byfn_e2e_test
 ```
 
 Postman collection
@@ -64,17 +79,13 @@ Postman collection
 
 ### Close plans
 
-* Create Dockerfile
-* Test docker container inside testnet 
+* Channels creation
+* Chaincode installation & instantiation 
 
 ### Strategic plans
 
-* Automate postman collections tests with Newman
-* Test with BYFN (partially done)
-* Create full integration test with BYFN, makefile and shell scripts (partially done)
+* Organisations and users management 
+* More tests with BYFN
 * Cover code with unit test (partially done)
 * Move configuration to ENV variables
-* Channels creation
-* Chaincode installation & instantiation 
-* Organisations and users management 
 

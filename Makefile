@@ -1,5 +1,7 @@
-.PHONY: all dev basic_clear build basic_up basic_down run test basic_restart byfn_up byfn_test byfn_clear byfn clear
-.PHONY: docker_build docker_up docker_restart docker_clear
+.PHONY: all dev clear run test unit_test
+.PHONY: build basic_up basic_down basic_restart basic_clear basic_newman_test basic_docker_up basic_docker_down basic_e2e_test
+.PHONY: byfn_up byfn_test byfn_clear byfn
+.PHONY: docker_build docker_up docker_restart
 
 help:
 	@echo "Fabric REST API GoLang"
@@ -37,12 +39,15 @@ run: build
 	@echo "Start app ..."
 	@./build/frag
 
+##### ALL TESTS
+test: unit_test basic_e2e_test byfn_e2e_test
+
 ##### UNIT TESTS
-test:
+unit_test:
 	@go test ./pkg... ./cmd...
 
 ##### CLEAR ALL
-clear: basic_clear byfn_clear
+clear: byfn_clear basic_clear basic_docker_down
 
 ##### BASIC NETWORK testing
 basic_up:
@@ -62,6 +67,18 @@ basic_clear: basic_down
 
 basic_restart: basic_clear basic_up
 
+basic_docker_up:
+	@./scripts/basic-docker-up.sh
+
+basic_docker_down:
+	@docker stop frag
+	@docker rm frag
+
+basic_newman_test:
+	@./scripts/basic-newman-test.sh
+
+basic_e2e_test: docker_build basic_up basic_docker_up basic_newman_test basic_docker_down basic_clear
+
 ##### BYFN testing
 byfn_up:
 	@./scripts/byfn-up.sh
@@ -72,17 +89,23 @@ byfn_test: build
 byfn_clear:
 	@./scripts/byfn-clear.sh
 
+byfn_docker_up:
+	@./scripts/byfn-docker-up.sh
+
+byfn_docker_down:
+	@docker stop frag
+	@docker rm frag
+
+byfn_newman_test:
+	@./scripts/byfn-newman-test.sh
+
 byfn: byfn_up byfn_test byfn_clear
+
+byfn_e2e_test: docker_build byfn_up byfn_docker_up byfn_newman_test byfn_docker_down byfn_clear
 
 ##### Docker
 docker_build:
 	@docker build -t frag:dev .
 
-docker_up:
-	@./scripts/basic-docker-up.sh
-
 docker_restart: docker_clear docker_up
 
-docker_clear:
-	@docker stop frag
-	@docker rm frag

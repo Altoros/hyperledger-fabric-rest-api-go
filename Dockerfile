@@ -21,9 +21,6 @@ RUN make build
 
 FROM alpine:3.9
 
-RUN adduser -S -D -H -h /app appuser
-USER appuser
-
 WORKDIR /app/
 
 COPY --from=build /src/build/frag .

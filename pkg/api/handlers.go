@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
 	"io"
@@ -74,7 +75,7 @@ func GetChannelsHandler(w http.ResponseWriter, r *http.Request) {
 
 // Create channel
 func PostChannelsHandler(w http.ResponseWriter, r *http.Request) {
-	panic("not implemented")
+	GetJsonOutputWrapper(w, "", errors.New("not implemented"))
 }
 
 func GetChannelsChannelIdHandler(w http.ResponseWriter, r *http.Request) {

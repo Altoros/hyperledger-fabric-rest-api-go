@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/Jeffail/gabs"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
@@ -25,7 +26,7 @@ func (fsc *FabricSdkClient) Channels() (string, error) {
 func (fsc *FabricSdkClient) ChannelInfo(channelId string) (string, error) {
 
 	// TODO implement
-	panic("not implemented")
+	return "", errors.New("not implemented")
 	/*response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
 	if err != nil {
 		return "", err
@@ -52,7 +53,7 @@ func (fsc *FabricSdkClient) ChannelInfo(channelId string) (string, error) {
 
 func (fsc *FabricSdkClient) ChannelOrgs(channelId string) (string, error) {
 	// TODO implement
-	panic("not implemented")
+	return "", errors.New("not implemented")
 }
 
 func (fsc *FabricSdkClient) ChannelPeers(channelId string) (string, error) {
