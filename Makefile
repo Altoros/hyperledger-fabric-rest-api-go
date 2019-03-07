@@ -1,14 +1,17 @@
-.PHONY: all dev clear run test unit_test
-.PHONY: build basic_up basic_down basic_restart basic_clear basic_newman_test basic_docker_up basic_docker_down basic_e2e_test
-.PHONY: byfn_up byfn_test byfn_clear byfn
-.PHONY: docker_build docker_up docker_restart
+.PHONY: build run unit_test test clear
+.PHONY: basic_up basic_down basic_clear basic_restart basic_docker_up basic_docker_down basic_newman_test basic_e2e_test
+.PHONY: byfn_up byfn_test byfn_clear byfn_docker_up byfn_docker_down byfn_newman_test byfn byfn_e2e_test
+.PHONY: docker_build
 
 help:
 	@echo "Fabric REST API GoLang"
 	@echo ""
 	@echo "build: build project"
 	@echo "run: build and run project"
-	@echo "test: run unit tests"
+	@echo "unit_test: run unit tests"
+	@echo "test: run all tests"
+	@echo ""
+	@echo "docker_build: build Docker container"
 	@echo ""
 	@echo "clear: stop and clear all test networks"
 	@echo ""
@@ -16,16 +19,21 @@ help:
 	@echo "basic_down: stop basic test network"
 	@echo "basic_clear: clear basic test network"
 	@echo "basic_restart: stop, clear and start over basic test network"
+	@echo "basic_docker_up: start Docker container wiht API and inject it in Basic network"
+	@echo "basic_docker_down: stop and clear API Docker container"
+	@echo "basic_newman_test: run API Newman tests"
+	@echo "basic_e2e_test: run end-2-end test with Docker container and API Newman tests on Basic network"
 	@echo ""
-	@echo "byfn: start, run API tests and clear BYFN network"
 	@echo "byfn_up: start BYFN network"
-	@echo "byfn_test: run API tests on BYFN network"
-	@echo "byfn_down: stop and clear BYFN network"
+	@echo "byfn_test: API shell tests on BYFN network"
+	@echo "byfn_clear: stop and clear BYFN network"
+	@echo "byfn_docker_up: start Docker container wiht API and inject it in BYFN network"
+	@echo "byfn_docker_down: stop and clear API Docker container"
+	@echo "byfn_newman_test: run API Newman tests"
+	@echo "byfn: start, run API shell tests and clear BYFN network"
+	@echo "byfn_e2e_test: run end-2-end test with Docker container and API Newman tests on BYFN network"
 	@echo ""
 
-all: basic_clear build basic_up run
-
-dev: build run
 
 ##### BUILD
 build:
@@ -48,6 +56,10 @@ unit_test:
 
 ##### CLEAR ALL
 clear: byfn_clear basic_clear basic_docker_down
+
+##### Docker
+docker_build:
+	@docker build -t frag:dev .
 
 ##### BASIC NETWORK testing
 basic_up:
@@ -102,10 +114,3 @@ byfn_newman_test:
 byfn: byfn_up byfn_test byfn_clear
 
 byfn_e2e_test: docker_build byfn_up byfn_docker_up byfn_newman_test byfn_docker_down byfn_clear
-
-##### Docker
-docker_build:
-	@docker build -t frag:dev .
-
-docker_restart: docker_clear docker_up
-

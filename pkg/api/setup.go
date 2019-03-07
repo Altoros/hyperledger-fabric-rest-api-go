@@ -98,38 +98,10 @@ func (fsc *FabricSdkClient) Initialize() error {
 				return errors.Wrapf(err, "failed to create peer from config")
 			}
 			peers = append(peers, endorser)
-			//action.orgIDByPeer[endorser.URL()] = orgID
 		}
 		fsc.allPeersByOrg[orgID] = peers
 		fsc.allPeers = append(fsc.allPeers, peers...)
 	}
-
-	/*
-	level := levelFromName(cliconfig.Config().LoggingLevel())
-	logging.SetLevel("", level)
-
-
-	for orgID := range networkConfig.Organizations {
-		peersConfig, ok := action.endpointConfig.PeersConfig(orgID)
-		if !ok {
-			return errors.Errorf("failed to get peer configs for org [%s]", orgID)
-		}
-
-		cliconfig.Config().Logger().Debugf("Peers for org [%s]: %v\n", orgID, peersConfig)
-
-		var peers []fab.Peer
-		for _, p := range peersConfig {
-			endorser, err := ctx.InfraProvider().CreatePeerFromConfig(&fab.NetworkPeer{PeerConfig: p})
-			if err != nil {
-				return errors.Wrapf(err, "failed to create peer from config")
-			}
-			peers = append(peers, endorser)
-			action.orgIDByPeer[endorser.URL()] = orgID
-		}
-		allPeersByOrg[orgID] = peers
-		allPeers = append(allPeers, peers...)
-	}
-	*/
 
 	fmt.Println("Initialization Successful")
 	fsc.initialized = true
@@ -191,10 +163,6 @@ func (fsc *FabricSdkClient) createEventsListeners(channelId, chaincodeId string)
 	return nil
 }
 
-type ChannelClientProvider interface {
-	ChannelClient(string) (*channel.Client, error)
-}
-
 func (fsc *FabricSdkClient) ChannelClient(channelId string) (*channel.Client, error) {
 	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
 
@@ -222,4 +190,16 @@ func (fsc *FabricSdkClient) eventClient(channelId string) (*event.Client, error)
 func (fsc *FabricSdkClient) GetCurrentPeer() fab.Peer {
 	// TODO replace with actually current peer
 	return fsc.allPeers[0]
+}
+
+func (fsc *FabricSdkClient) Admin() *resmgmt.Client {
+	return fsc.admin
+}
+
+type ChannelClientProvider interface {
+	ChannelClient(string) (*channel.Client, error)
+}
+
+type AdminProvider interface {
+	Admin() *resmgmt.Client
 }

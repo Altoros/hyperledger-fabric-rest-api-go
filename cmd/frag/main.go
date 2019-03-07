@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/handlers"
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -74,22 +75,27 @@ func main() {
 
 func Router() *mux.Router {
 	r := mux.NewRouter()
-	r.HandleFunc("/", api.WelcomeHandler)
-	r.HandleFunc("/health", api.HealthCheckHandler)
-	r.HandleFunc("/chaincodes/installed", api.GetChaincodesInstalledHandler).Methods("GET")
-	r.HandleFunc("/channels/{channelId}/chaincodes/instantiated", api.GetChaincodesInstantiatedHandler).Methods("GET") // TODO
-	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/info", api.GetChaincodesInfoHandler).Methods("GET")
-	r.HandleFunc("/channels", api.GetChannelsHandler).Methods("GET")
-	r.HandleFunc("/channels", api.PostChannelsHandler).Methods("POST") // TODO
+	r.HandleFunc("/", handlers.WelcomeHandler)
+	r.HandleFunc("/health", handlers.HealthCheckHandler)
 
-	r.HandleFunc("/channels/{channelId}", api.GetChannelsChannelIdHandler).Methods("GET")
-	r.HandleFunc("/channels/{channelId}/orgs", api.GetChannelsChannelIdOrgsHandler).Methods("GET") // TODO
-	r.HandleFunc("/channels/{channelId}/peers", api.GetChannelsChannelIdPeersHandler).Methods("GET")
+	r.HandleFunc("/chaincodes/install", handlers.PostChaincodesInstallHandler).Methods("POST")
+	r.HandleFunc("/chaincodes/instantiate", handlers.PostChaincodesInstantiateHandler).Methods("POST")
 
-	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/query", api.GetQueryHandler).Methods("GET")
-	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/invoke", api.PostInvokeHandler).Methods("POST")
+	r.HandleFunc("/chaincodes/installed", handlers.GetChaincodesInstalledHandler).Methods("GET")
 
-	r.HandleFunc("/init_test_fixtures", api.InitTestFixturesHandler).Methods("POST") // for test purposes
+	r.HandleFunc("/channels/{channelId}/chaincodes/instantiated", handlers.GetChaincodesInstantiatedHandler).Methods("GET") // TODO
+	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/info", handlers.GetChaincodesInfoHandler).Methods("GET")
+	r.HandleFunc("/channels", handlers.GetChannelsHandler).Methods("GET")
+	r.HandleFunc("/channels", handlers.PostChannelsHandler).Methods("POST") // TODO
+
+	r.HandleFunc("/channels/{channelId}", handlers.GetChannelsChannelIdHandler).Methods("GET")
+	r.HandleFunc("/channels/{channelId}/orgs", handlers.GetChannelsChannelIdOrgsHandler).Methods("GET") // TODO
+	r.HandleFunc("/channels/{channelId}/peers", handlers.GetChannelsChannelIdPeersHandler).Methods("GET")
+
+	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/query", handlers.GetQueryHandler).Methods("GET")
+	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/invoke", handlers.PostInvokeHandler).Methods("POST")
+
+	r.HandleFunc("/init_test_fixtures", handlers.InitTestFixturesHandler).Methods("POST") // for test purposes
 
 	return r
 }

@@ -104,3 +104,15 @@ func PeerToJsonObjects(peer fab.Peer) *gabs.Container {
 
 	return jsonObj
 }
+
+func CheckChannelExist(adminProvider AdminProvider, peer fab.Peer, channelId string) bool{
+	response, _ := adminProvider.Admin().QueryChannels(resmgmt.WithTargets(peer))
+	channels := response.GetChannels()
+
+	for _, ch := range channels {
+		if ch.ChannelId == channelId {
+			return true
+		}
+	}
+	return false
+}
