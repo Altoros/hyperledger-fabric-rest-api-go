@@ -34,4 +34,5 @@ require (
 	golang.org/x/crypto v0.0.0-20190225124518-7f87c0fbb88b
 	golang.org/x/net v0.0.0-20190227022144-312bce6e941f
 	google.golang.org/grpc v1.2.1-0.20190226193433-3aaef9f0c1b1
+	gopkg.in/yaml.v2 v2.2.2
 )

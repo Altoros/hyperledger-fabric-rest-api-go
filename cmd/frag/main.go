@@ -1,38 +1,35 @@
 package main
 
 import (
-	"encoding/json"
 	"fabric-rest-api-go/pkg/api"
 	"fabric-rest-api-go/pkg/handlers"
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 type ApiConfig struct {
 	Org struct {
-		Admin string `json:"admin"`
-		Name  string `json:"name"`
-	} `json:"org"`
+		Admin string `yaml:"admin"`
+		Name  string `yaml:"name"`
+	} `yaml:"org"`
 	User struct {
-		Name string `json:"name"`
-	} `json:"user"`
-	ConfigPath string `json:"configPath"`
+		Name string `yaml:"name"`
+	} `yaml:"user"`
 }
 
 func LoadConfiguration(file string) (*ApiConfig, error) {
 	var config *ApiConfig
-	configFile, err := os.Open(file)
-	defer configFile.Close()
+	configFile, err := ioutil.ReadFile(file)
 	if err != nil {
 		return nil, errors.WithMessage(err, "Unable to open configuration file")
 	}
-	jsonParser := json.NewDecoder(configFile)
-	err = jsonParser.Decode(&config)
+	err = yaml.Unmarshal(configFile, &config)
 	if err != nil {
 		return nil, errors.WithMessage(err, "Unable to parse configuration file JSON")
 	}
@@ -40,12 +37,10 @@ func LoadConfiguration(file string) (*ApiConfig, error) {
 }
 
 func main() {
-
-	// TODO merge config files
 	var apiConfigPath string
 	var sdkConfigPath string
-	flag.StringVar(&apiConfigPath, "api-config", "./configs/config.json", "Path to API configuration file (example: -api-config=./config.json)")
-	flag.StringVar(&sdkConfigPath, "sdk-config", "./configs/config.yaml", "Path to SDK configuration file (example: -sdk-config=./config.yaml)")
+	flag.StringVar(&apiConfigPath, "api-config", "./configs/api.yaml", "Path to API configuration file (example: -api-config=./api.yaml)")
+	flag.StringVar(&sdkConfigPath, "sdk-config", "./configs/network.yaml", "Path to SDK configuration file (example: -sdk-config=./network.yaml)")
 	flag.Parse()
 
 	config, err := LoadConfiguration(apiConfigPath)
