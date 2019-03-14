@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -65,6 +66,9 @@ func main() {
 	fmt.Println("Start listening to localhost:8080")
 
 	e := echo.New()
+
+	e.Use(middleware.CORS()) // TODO make this optional
+
 	e.GET("/", handlers.WelcomeHandler)
 	e.GET("/health", handlers.HealthCheckHandler)
 
