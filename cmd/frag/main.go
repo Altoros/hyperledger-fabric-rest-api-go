@@ -5,12 +5,10 @@ import (
 	"fabric-rest-api-go/pkg/handlers"
 	"flag"
 	"fmt"
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"log"
-	"net/http"
 )
 
 type ApiConfig struct {
@@ -65,32 +63,29 @@ func main() {
 	}
 
 	fmt.Println("Start listening to localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", Router()))
-}
 
-func Router() *mux.Router {
-	r := mux.NewRouter()
-	r.HandleFunc("/", handlers.WelcomeHandler)
-	r.HandleFunc("/health", handlers.HealthCheckHandler)
+	e := echo.New()
+	e.GET("/", handlers.WelcomeHandler)
+	e.GET("/health", handlers.HealthCheckHandler)
 
-	r.HandleFunc("/chaincodes/install", handlers.PostChaincodesInstallHandler).Methods("POST")
-	r.HandleFunc("/chaincodes/instantiate", handlers.PostChaincodesInstantiateHandler).Methods("POST")
+	e.POST("/chaincodes/install", handlers.PostChaincodesInstallHandler)
+	e.POST("/chaincodes/instantiate", handlers.PostChaincodesInstantiateHandler)
 
-	r.HandleFunc("/chaincodes/installed", handlers.GetChaincodesInstalledHandler).Methods("GET")
+	e.GET("/chaincodes/installed", handlers.GetChaincodesInstalledHandler)
 
-	r.HandleFunc("/channels/{channelId}/chaincodes/instantiated", handlers.GetChaincodesInstantiatedHandler).Methods("GET") // TODO
-	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/info", handlers.GetChaincodesInfoHandler).Methods("GET")
-	r.HandleFunc("/channels", handlers.GetChannelsHandler).Methods("GET")
-	r.HandleFunc("/channels", handlers.PostChannelsHandler).Methods("POST") // TODO
+	e.GET("/channels/:channelId/chaincodes/instantiated", handlers.GetChaincodesInstantiatedHandler) // TODO
+	e.GET("/channels/:channelId/chaincodes/:chaincodeId/info", handlers.GetChaincodesInfoHandler)
+	e.GET("/channels", handlers.GetChannelsHandler)
+	e.POST("/channels", handlers.PostChannelsHandler) // TODO
 
-	r.HandleFunc("/channels/{channelId}", handlers.GetChannelsChannelIdHandler).Methods("GET")
-	r.HandleFunc("/channels/{channelId}/orgs", handlers.GetChannelsChannelIdOrgsHandler).Methods("GET") // TODO
-	r.HandleFunc("/channels/{channelId}/peers", handlers.GetChannelsChannelIdPeersHandler).Methods("GET")
+	e.GET("/channels/:channelId", handlers.GetChannelsChannelIdHandler)
+	e.GET("/channels/:channelId/orgs", handlers.GetChannelsChannelIdOrgsHandler) // TODO
+	e.GET("/channels/:channelId/peers", handlers.GetChannelsChannelIdPeersHandler)
 
-	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/query", handlers.GetQueryHandler).Methods("GET")
-	r.HandleFunc("/channels/{channelId}/chaincodes/{chaincodeId}/invoke", handlers.PostInvokeHandler).Methods("POST")
+	e.GET("/channels/:channelId/chaincodes/:chaincodeId/query", handlers.GetQueryHandler)
+	e.POST("/channels/:channelId/chaincodes/:chaincodeId/invoke", handlers.PostInvokeHandler)
 
-	r.HandleFunc("/init_test_fixtures", handlers.InitTestFixturesHandler).Methods("POST") // for test purposes
+	e.POST("/init_test_fixtures", handlers.InitTestFixturesHandler) // TODO remove, for test purposes only*/
 
-	return r
+	e.Logger.Fatal(e.Start(":8080"))
 }

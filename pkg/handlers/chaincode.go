@@ -3,144 +3,87 @@ package handlers
 import (
 	"fabric-rest-api-go/pkg/api"
 	"fmt"
-	"github.com/gorilla/mux"
-	"io"
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-func PostChaincodesInstallHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		io.WriteString(w, err.Error())
-		return
-	}
+func PostChaincodesInstallHandler(c echo.Context) error {
+	chaincodeName := c.FormValue("name")
+	chaincodeVersion := c.FormValue("version")
+	channelId := c.FormValue("channel")
 
-	chaincodeName := r.FormValue("name")
-	chaincodeVersion := r.FormValue("version")
-	channelId := r.FormValue("channel")
-
-	ccFile, ccHeader, err := r.FormFile("cc")
+	ccHeader, err := c.FormFile("cc")
 	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		io.WriteString(w, "Problem with chaincode file upload: "+err.Error())
-		return
+		return c.String(http.StatusUnprocessableEntity, "Problem with chaincode file upload: "+err.Error())
 	}
-	_ = ccFile
 	_ = ccHeader
 	// TODO handle chaincode upload
 
-
 	if chaincodeName == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Chaincode name is required")
-		return
+		return c.String(http.StatusBadRequest, "Chaincode name is required")
 	}
 
 	if chaincodeVersion == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Chaincode version is required")
-		return
+		return c.String(http.StatusBadRequest, "Chaincode version is required")
 	}
 
 	if channelId == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Channel version is required")
-		return
+		return c.String(http.StatusBadRequest, "Channel name is required")
 	}
 
 	if !api.CheckChannelExist(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, "Channel not exist")
-		return
+		return c.String(http.StatusInternalServerError, "Channel not exist")
 	}
 
 	resultString, err := api.ChaincodeInstall(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, err.Error())
-		return
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	_, err = io.WriteString(w, fmt.Sprintf(`{"result": "%s"}`, resultString))
-	if err != nil {
-		panic(err)
-	}
+	return c.JSONBlob(http.StatusOK, []byte( fmt.Sprintf(`{"result": "%s"}`, resultString)))
 }
 
-func PostChaincodesInstantiateHandler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity)
-		io.WriteString(w, err.Error())
-		return
-	}
-
-	chaincodeName := r.FormValue("name")
-	chaincodeVersion := r.FormValue("version")
-	channelId := r.FormValue("channel")
+func PostChaincodesInstantiateHandler(c echo.Context) error {
+	chaincodeName := c.FormValue("name")
+	chaincodeVersion := c.FormValue("version")
+	channelId := c.FormValue("channel")
 
 	if chaincodeName == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Chaincode name is required")
-		return
+		return c.String(http.StatusBadRequest, "Chaincode name is required")
 	}
 
 	if chaincodeVersion == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Chaincode version is required")
-		return
+		return c.String(http.StatusBadRequest, "Chaincode version is required")
 	}
 
 	if channelId == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		io.WriteString(w, "Channel is required")
-		return
+		return c.String(http.StatusBadRequest, "Channel name is required")
 	}
 
 	if !api.CheckChannelExist(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId) {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, "Channel not exist")
-		return
+		return c.String(http.StatusInternalServerError, "Channel not exist")
 	}
 
 	resultString, err := api.ChaincodeInstantiate(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, err.Error())
-		return
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	_, err = io.WriteString(w, fmt.Sprintf(`{"result": "%s"}`, resultString))
-	if err != nil {
-		panic(err)
-	}
+	return c.JSONBlob(http.StatusOK, []byte( fmt.Sprintf(`{"result": "%s"}`, resultString)))
 }
 
-func GetChaincodesInstalledHandler(w http.ResponseWriter, r *http.Request) {
-	GetHandlerWrapper(w, r, api.FscInstance.InstalledChaincodes)
+func GetChaincodesInstalledHandler(c echo.Context) error {
+	return GetHandlerWrapper(c, api.FscInstance.InstalledChaincodes)
 }
 
 // Get instantiated chaincodes list
-func GetChaincodesInstantiatedHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	jsonString, err := api.FscInstance.InstantiatedChaincodes(vars["channelId"])
-	GetJsonOutputWrapper(w, jsonString, err)
+func GetChaincodesInstantiatedHandler(c echo.Context) error {
+	jsonString, err := api.FscInstance.InstantiatedChaincodes(c.Param("channelId"))
+	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
-func GetChaincodesInfoHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+func GetChaincodesInfoHandler(c echo.Context) error {
 	// TODO validate
-	jsonString, err := api.FscInstance.ChaincodeInfo(vars["channelId"], vars["chaincodeId"])
-	GetJsonOutputWrapper(w, jsonString, err)
+	jsonString, err := api.FscInstance.ChaincodeInfo(c.Param("channelId"), c.Param("chaincodeId"))
+	return GetJsonOutputWrapper(c, jsonString, err)
 }

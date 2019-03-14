@@ -19,6 +19,7 @@ require (
 	github.com/hyperledger/fabric-amcl v0.0.0-20181230093703-5ccba6eab8d6
 	github.com/hyperledger/fabric-lib-go v1.0.0 // indirect
 	github.com/hyperledger/fabric-sdk-go v1.0.0-alpha4.0.20190213195435-bda01c9488d7
+	github.com/labstack/echo/v4 v4.0.0
 	github.com/magiconair/properties v1.8.1-0.20190110142458-7757cc9fdb85
 	github.com/miekg/pkcs11 v0.0.0-20190225171305-6120d95c0e95
 	github.com/onsi/ginkgo v1.6.0
@@ -27,7 +28,7 @@ require (
 	github.com/pkg/errors v0.8.2-0.20190227000051-27936f6d90f9
 	github.com/prometheus/client_golang v0.9.2 // indirect
 	github.com/spf13/viper v1.3.2-0.20190127094459-d104d259b338
-	github.com/stretchr/testify v1.3.1-0.20190219160739-3f658bd5ac42
+	github.com/stretchr/testify v1.3.1-0.20190311161405-34c6fa2dc709
 	go.uber.org/atomic v1.3.3-0.20190226011305-5328d69c76a9
 	go.uber.org/multierr v1.1.1-0.20180122172545-ddea229ff1df
 	go.uber.org/zap v1.9.2-0.20190215012540-d2a364dac1d9

@@ -2,39 +2,26 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/api"
-	"io"
+	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
-func WelcomeHandler(w http.ResponseWriter, _ *http.Request) {
-	_, err := io.WriteString(w, "This is a Fabric REST Api welcome page.")
-	if err != nil {
-		panic(err)
-	}
+func WelcomeHandler(c echo.Context) error {
+	return c.String(http.StatusOK, "This is a Fabric REST Api welcome page.")
 }
 
 // A very simple health check
-func HealthCheckHandler(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	_, err := io.WriteString(w, `{"alive": true}`)
-	if err != nil {
-		panic(err)
-	}
+func HealthCheckHandler(c echo.Context) error {
+	return c.JSONBlob(http.StatusOK, []byte(`{"alive": true}`))
 }
 
 // TODO remove, replace with chaincode install & instantiate calls
 // Create test channel, install and instantiate test chaincode
-func InitTestFixturesHandler(w http.ResponseWriter, _ *http.Request) {
+func InitTestFixturesHandler(c echo.Context) error {
 	err := api.FscInstance.InitBasicTestFixturesHandler()
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		io.WriteString(w, err.Error())
-	} else {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		io.WriteString(w, `{"message": "Test channel created, chaincode installed and instantiated"}`)
+		return c.String(http.StatusInternalServerError, err.Error())
 	}
+
+	return c.JSONBlob(http.StatusOK, []byte(`{"message": "Test channel created, chaincode installed and instantiated"}`))
 }

@@ -1,19 +1,24 @@
 package main
 
 import (
-	"github.com/magiconair/properties/assert"
+	"fabric-rest-api-go/pkg/handlers"
+	"github.com/labstack/echo/v4"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 )
 
-func TestRouter(t *testing.T) {
-	request, _ := http.NewRequest("GET", "/", nil)
-	response := httptest.NewRecorder()
-	Router().ServeHTTP(response, request)
+func TestWelcome(t *testing.T) {
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
 
-	assert.Equal(t, 200, response.Code)
-	assert.Equal(t, response.Header().Get("Content-Type"), "text/plain; charset=utf-8")
-	assert.Equal(t, true, strings.Contains(response.Body.String(), "Fabric REST Api"))
+	// Assertions
+	if assert.NoError(t, handlers.WelcomeHandler(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Contains(t, rec.Body.String(), "Fabric REST Api")
+	}
 }
