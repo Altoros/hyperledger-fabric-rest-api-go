@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fe4bb834-207b-4c1a-b792-fbc0c9cbee5c",
+		"_postman_id": "3873f36d-eafd-4dc3-94ce-fa15ed763fe2",
 		"name": "FabricApi Basic network",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -402,7 +402,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=invoke&args=query,hello",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=invoke&args=query,hello",
 					"host": [
 						"{{host}}"
 					],
@@ -410,8 +410,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"query"
+						"{{cc}}"
 					],
 					"query": [
 						{
@@ -451,19 +450,20 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "value",
-							"value": "123123213",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"invoke\",\n        \"hello\",\n        \"42\"\n    ]\n}"
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/invoke?fcn=invoke&args=invoke,hello,42",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}",
 					"host": [
 						"{{host}}"
 					],
@@ -471,18 +471,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"invoke"
-					],
-					"query": [
-						{
-							"key": "fcn",
-							"value": "invoke"
-						},
-						{
-							"key": "args",
-							"value": "invoke,hello,42"
-						}
+						"{{cc}}"
 					]
 				}
 			},
@@ -502,7 +491,7 @@
 							"",
 							"pm.test(\"Query result is 42\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.result).to.eql(\"42\");",
+							"    pm.expect(jsonData.result).to.eql(42);",
 							"});",
 							""
 						],
@@ -518,7 +507,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=invoke&args=query,hello",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=invoke&args=query,hello",
 					"host": [
 						"{{host}}"
 					],
@@ -526,8 +515,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"query"
+						"{{cc}}"
 					],
 					"query": [
 						{

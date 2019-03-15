@@ -49,6 +49,7 @@ run: build
 
 ##### ALL TESTS
 test: unit_test basic_e2e_test byfn_e2e_test
+	@echo "\n\n-=-=-=- All tests passed successfully! -=-=-=-\n\n"
 
 ##### UNIT TESTS
 unit_test:

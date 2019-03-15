@@ -86,10 +86,10 @@ func main() {
 	e.GET("/channels/:channelId/orgs", handlers.GetChannelsChannelIdOrgsHandler) // TODO
 	e.GET("/channels/:channelId/peers", handlers.GetChannelsChannelIdPeersHandler)
 
-	e.GET("/channels/:channelId/chaincodes/:chaincodeId/query", handlers.GetQueryHandler)
-	e.POST("/channels/:channelId/chaincodes/:chaincodeId/invoke", handlers.PostInvokeHandler)
+	e.GET("/channels/:channelId/chaincodes/:chaincodeId", handlers.GetQueryHandler)
+	e.POST("/channels/:channelId/chaincodes/:chaincodeId", handlers.PostInvokeHandler)
 
-	e.POST("/init_test_fixtures", handlers.InitTestFixturesHandler) // TODO remove, for test purposes only*/
+	e.POST("/init_test_fixtures", handlers.InitTestFixturesHandler) // TODO remove, for test purposes only
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

@@ -357,7 +357,7 @@
 							"",
 							"pm.test(\"Query result is '90'\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.result).to.eql(\"90\");",
+							"    pm.expect(jsonData.result).to.eql(90);",
 							"});",
 							""
 						],
@@ -373,7 +373,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=query&args=a",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=a",
 					"host": [
 						"{{host}}"
 					],
@@ -381,8 +381,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"query"
+						"{{cc}}"
 					],
 					"query": [
 						{
@@ -412,7 +411,7 @@
 							"",
 							"pm.test(\"Query result is '210'\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.result).to.eql(\"210\");",
+							"    pm.expect(jsonData.result).to.eql(210);",
 							"});",
 							""
 						],
@@ -428,7 +427,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=query&args=b",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=b",
 					"host": [
 						"{{host}}"
 					],
@@ -436,8 +435,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"query"
+						"{{cc}}"
 					],
 					"query": [
 						{
@@ -477,19 +475,20 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "value",
-							"value": "123123213",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"b\",\n        \"a\",\n        \"10\"\n    ]\n}"
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/invoke?fcn=invoke&args=b,a,10",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}",
 					"host": [
 						"{{host}}"
 					],
@@ -497,18 +496,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"invoke"
-					],
-					"query": [
-						{
-							"key": "fcn",
-							"value": "invoke"
-						},
-						{
-							"key": "args",
-							"value": "b,a,10"
-						}
+						"{{cc}}"
 					]
 				}
 			},
@@ -528,7 +516,7 @@
 							"",
 							"pm.test(\"Query result is '100'\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.result).to.eql(\"100\");",
+							"    pm.expect(jsonData.result).to.eql(100);",
 							"});",
 							""
 						],
@@ -544,7 +532,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=query&args=a",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=a",
 					"host": [
 						"{{host}}"
 					],
@@ -552,8 +540,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"query"
+						"{{cc}}"
 					],
 					"query": [
 						{
@@ -583,7 +570,7 @@
 							"",
 							"pm.test(\"Query result is '200'\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.result).to.eql(\"200\");",
+							"    pm.expect(jsonData.result).to.eql(200);",
 							"});",
 							""
 						],
@@ -599,7 +586,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/query?fcn=query&args=b",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=b",
 					"host": [
 						"{{host}}"
 					],
@@ -607,8 +594,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"query"
+						"{{cc}}"
 					],
 					"query": [
 						{
@@ -648,19 +634,20 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "value",
-							"value": "123123213",
-							"type": "text"
-						}
-					]
+					"mode": "raw",
+					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"a\",\n        \"b\",\n        \"10\"\n    ]\n}"
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/invoke?fcn=invoke&args=a,b,10",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}",
 					"host": [
 						"{{host}}"
 					],
@@ -668,18 +655,7 @@
 						"channels",
 						"{{ch}}",
 						"chaincodes",
-						"{{cc}}",
-						"invoke"
-					],
-					"query": [
-						{
-							"key": "fcn",
-							"value": "invoke"
-						},
-						{
-							"key": "args",
-							"value": "a,b,10"
-						}
+						"{{cc}}"
 					]
 				}
 			},
@@ -710,19 +686,19 @@
 	],
 	"variable": [
 		{
-			"id": "17c2f3be-7a65-45e5-a4ff-61e0ad7df7f2",
+			"id": "a64bec7b-e792-41cb-8709-4a440ec3d2e2",
 			"key": "host",
 			"value": "localhost:8080",
 			"type": "string"
 		},
 		{
-			"id": "e54adec7-c18e-4fc5-82fd-79e1ec2cb1a4",
+			"id": "6d526591-4ea4-465a-9ec0-bc15f79424e1",
 			"key": "ch",
 			"value": "mychannel",
 			"type": "string"
 		},
 		{
-			"id": "4cb4c7f8-27d8-4548-9865-9046d1fd4828",
+			"id": "c34f5846-d33b-4bf3-9fe4-843f5901a73e",
 			"key": "cc",
 			"value": "mycc",
 			"type": "string"

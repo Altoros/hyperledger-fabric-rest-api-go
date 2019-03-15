@@ -5,12 +5,21 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"strings"
 )
 
+type invokeRequest struct {
+	Fcn string `json:"fcn"`
+	Args []string `json:"args"`
+}
+
 func PostInvokeHandler(c echo.Context) error {
-	fcn := c.FormValue("fcn")
-	args := strings.Split(c.FormValue("args"), ",")
+	m := new(invokeRequest)
+	if err := c.Bind(m); err != nil {
+		return err
+	}
+
+	fcn := m.Fcn
+	args := m.Args
 
 	if fcn == "" {
 		return c.String(http.StatusBadRequest, "Fcn is required")
