@@ -7,7 +7,9 @@ import (
 	"net/http"
 )
 
-func PostChaincodesInstallHandler(c echo.Context) error {
+func PostChaincodesInstallHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+
 	chaincodeName := c.FormValue("name")
 	chaincodeVersion := c.FormValue("version")
 	channelId := c.FormValue("channel")
@@ -31,11 +33,11 @@ func PostChaincodesInstallHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Channel name is required")
 	}
 
-	if !api.CheckChannelExist(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId) {
+	if !api.CheckChannelExist(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId) {
 		return c.String(http.StatusInternalServerError, "Channel not exist")
 	}
 
-	resultString, err := api.ChaincodeInstall(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
+	resultString, err := api.ChaincodeInstall(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -43,7 +45,9 @@ func PostChaincodesInstallHandler(c echo.Context) error {
 	return c.JSONBlob(http.StatusOK, []byte( fmt.Sprintf(`{"result": "%s"}`, resultString)))
 }
 
-func PostChaincodesInstantiateHandler(c echo.Context) error {
+func PostChaincodesInstantiateHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+
 	chaincodeName := c.FormValue("name")
 	chaincodeVersion := c.FormValue("version")
 	channelId := c.FormValue("channel")
@@ -60,11 +64,11 @@ func PostChaincodesInstantiateHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Channel name is required")
 	}
 
-	if !api.CheckChannelExist(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId) {
+	if !api.CheckChannelExist(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId) {
 		return c.String(http.StatusInternalServerError, "Channel not exist")
 	}
 
-	resultString, err := api.ChaincodeInstantiate(&api.FscInstance, api.FscInstance.GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
+	resultString, err := api.ChaincodeInstantiate(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -72,18 +76,21 @@ func PostChaincodesInstantiateHandler(c echo.Context) error {
 	return c.JSONBlob(http.StatusOK, []byte( fmt.Sprintf(`{"result": "%s"}`, resultString)))
 }
 
-func GetChaincodesInstalledHandler(c echo.Context) error {
-	return GetHandlerWrapper(c, api.FscInstance.InstalledChaincodes)
+func GetChaincodesInstalledHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+	return GetHandlerWrapper(c, c.Fsc().InstalledChaincodes)
 }
 
 // Get instantiated chaincodes list
-func GetChaincodesInstantiatedHandler(c echo.Context) error {
-	jsonString, err := api.FscInstance.InstantiatedChaincodes(c.Param("channelId"))
+func GetChaincodesInstantiatedHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+	jsonString, err := c.Fsc().InstantiatedChaincodes(c.Param("channelId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
-func GetChaincodesInfoHandler(c echo.Context) error {
+func GetChaincodesInfoHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
 	// TODO validate
-	jsonString, err := api.FscInstance.ChaincodeInfo(c.Param("channelId"), c.Param("chaincodeId"))
+	jsonString, err := c.Fsc().ChaincodeInfo(c.Param("channelId"), c.Param("chaincodeId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }

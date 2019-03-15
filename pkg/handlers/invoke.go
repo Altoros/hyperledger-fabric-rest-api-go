@@ -12,7 +12,9 @@ type invokeRequest struct {
 	Args []string `json:"args"`
 }
 
-func PostInvokeHandler(c echo.Context) error {
+func PostInvokeHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+
 	m := new(invokeRequest)
 	if err := c.Bind(m); err != nil {
 		return err
@@ -25,7 +27,7 @@ func PostInvokeHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Fcn is required")
 	}
 
-	resultString, err := api.Invoke(&api.FscInstance, c.Param("channelId"), c.Param("chaincodeId"), fcn, args)
+	resultString, err := api.Invoke(c.Fsc(), c.Param("channelId"), c.Param("chaincodeId"), fcn, args)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

@@ -8,7 +8,9 @@ import (
 	"strings"
 )
 
-func GetQueryHandler(c echo.Context) error {
+func GetQueryHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+
 	fcn := c.FormValue("fcn")
 	args := strings.Split(c.FormValue("args"), ",")
 
@@ -16,7 +18,7 @@ func GetQueryHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Fcn is required")
 	}
 
-	resultString, err := api.Query(&api.FscInstance, api.FscInstance.GetCurrentPeer(), c.Param("channelId"), c.Param("chaincodeId"), fcn, args)
+	resultString, err := api.Query(c.Fsc(), c.Fsc().GetCurrentPeer(), c.Param("channelId"), c.Param("chaincodeId"), fcn, args)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

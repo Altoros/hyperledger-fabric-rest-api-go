@@ -36,14 +36,14 @@ func (fsc *FabricSdkClient) InitBasicTestFixturesHandler() error {
 
 	if !channelExist {
 		req := resmgmt.SaveChannelRequest{ChannelID: testChannelId, ChannelConfigPath: channelConfigTx, SigningIdentities: []msp.SigningIdentity{fsc.adminIdentity}}
-		txID, err := FscInstance.admin.SaveChannel(req, ordererEndPoint)
+		txID, err := fsc.admin.SaveChannel(req, ordererEndPoint)
 		if err != nil || txID.TransactionID == "" {
 			return errors.WithMessage(err, "failed to save channel")
 		}
 		fmt.Println("Channel created")
 
 		// Make admin user join the previously created channel
-		if err = FscInstance.admin.JoinChannel(testChannelId, resmgmt.WithRetry(retry.DefaultResMgmtOpts), ordererEndPoint); err != nil {
+		if err = fsc.admin.JoinChannel(testChannelId, resmgmt.WithRetry(retry.DefaultResMgmtOpts), ordererEndPoint); err != nil {
 			return errors.WithMessage(err, "failed to make admin join channel")
 		}
 		fmt.Println("Channel joined")

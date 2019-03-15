@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fabric-rest-api-go/pkg/api"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -17,8 +16,9 @@ func HealthCheckHandler(c echo.Context) error {
 
 // TODO remove, replace with chaincode install & instantiate calls
 // Create test channel, install and instantiate test chaincode
-func InitTestFixturesHandler(c echo.Context) error {
-	err := api.FscInstance.InitBasicTestFixturesHandler()
+func InitTestFixturesHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+	err := c.Fsc().InitBasicTestFixturesHandler()
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

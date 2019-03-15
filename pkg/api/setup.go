@@ -14,8 +14,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-var FscInstance FabricSdkClient
-
 // FabricSdkClient implementation
 type FabricSdkClient struct {
 	ConfigFile string

@@ -47,7 +47,7 @@ func main() {
 		panic(err)
 	}
 
-	api.FscInstance = api.FabricSdkClient{
+	fsc := api.FabricSdkClient{
 		ConfigFile: sdkConfigPath,
 
 		// Org parameters
@@ -58,7 +58,7 @@ func main() {
 		UserName: config.User.Name,
 	}
 
-	err = api.FscInstance.Initialize()
+	err = fsc.Initialize()
 	if err != nil {
 		panic(err)
 	}
@@ -66,6 +66,14 @@ func main() {
 	fmt.Println("Start listening to localhost:8080")
 
 	e := echo.New()
+
+	e.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &handlers.ApiContext{Context: c}
+			cc.SetFsc(&fsc)
+			return h(cc)
+		}
+	})
 
 	e.Use(middleware.CORS()) // TODO make this optional
 

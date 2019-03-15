@@ -2,31 +2,35 @@ package handlers
 
 import (
 	"errors"
-	"fabric-rest-api-go/pkg/api"
 	"github.com/labstack/echo/v4"
 )
 
 // Get channels list
-func GetChannelsHandler(c echo.Context) error {
-	return GetHandlerWrapper(c, api.FscInstance.Channels)
+func GetChannelsHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+	return GetHandlerWrapper(c, c.Fsc().Channels)
 }
 
 // Create channel
-func PostChannelsHandler(c echo.Context) error {
+func PostChannelsHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
 	return GetJsonOutputWrapper(c, "", errors.New("not implemented"))
 }
 
-func GetChannelsChannelIdHandler(c echo.Context) error {
-	jsonString, err := api.FscInstance.ChannelInfo(c.Param("channelId"))
+func GetChannelsChannelIdHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+	jsonString, err := c.Fsc().ChannelInfo(c.Param("channelId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
-func GetChannelsChannelIdOrgsHandler(c echo.Context) error {
-	jsonString, err := api.FscInstance.ChannelOrgs(c.Param("channelId"))
+func GetChannelsChannelIdOrgsHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+	jsonString, err := c.Fsc().ChannelOrgs(c.Param("channelId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
-func GetChannelsChannelIdPeersHandler(c echo.Context) error {
-	jsonString, err := api.FscInstance.ChannelPeers(c.Param("channelId"))
+func GetChannelsChannelIdPeersHandler(ec echo.Context) error {
+	c := ec.(*ApiContext)
+	jsonString, err := c.Fsc().ChannelPeers(c.Param("channelId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }
