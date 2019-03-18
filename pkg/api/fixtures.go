@@ -24,7 +24,12 @@ const (
 func (fsc *FabricSdkClient) InitBasicTestFixturesHandler() error {
 	ordererEndPoint := resmgmt.WithOrdererEndpoint(testOrdererId)
 
-	response, _ := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
+	peer, err := fsc.GetRandomPeer()
+	if err != nil {
+		return err
+	}
+
+	response, _ := fsc.admin.QueryChannels(resmgmt.WithTargets(peer))
 	channels := response.GetChannels()
 
 	channelExist := false
@@ -49,7 +54,7 @@ func (fsc *FabricSdkClient) InitBasicTestFixturesHandler() error {
 		fmt.Println("Channel joined")
 	}
 
-	queryInstalledChaincodesResponse, _ := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(fsc.GetCurrentPeer()))
+	queryInstalledChaincodesResponse, _ := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(peer))
 	installedChaincodes := queryInstalledChaincodesResponse.GetChaincodes()
 
 	chaincodeExists := false

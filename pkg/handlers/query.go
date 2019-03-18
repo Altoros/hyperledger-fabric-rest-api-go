@@ -18,7 +18,12 @@ func GetQueryHandler(ec echo.Context) error {
 		return c.String(http.StatusBadRequest, "Fcn is required")
 	}
 
-	resultString, err := api.Query(c.Fsc(), c.Fsc().GetCurrentPeer(), c.Param("channelId"), c.Param("chaincodeId"), fcn, args)
+	peer, err := c.CurrentPeer()
+	if err != nil {
+		return err
+	}
+
+	resultString, err := api.Query(c.Fsc(), peer, c.Param("channelId"), c.Param("chaincodeId"), fcn, args)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}

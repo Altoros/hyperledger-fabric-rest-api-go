@@ -9,8 +9,8 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 )
 
-func (fsc *FabricSdkClient) Channels() (string, error) {
-	response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
+func (fsc *FabricSdkClient) Channels(peer fab.Peer) (string, error) {
+	response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(peer))
 	if err != nil {
 		return "", err
 	}
@@ -27,7 +27,7 @@ func (fsc *FabricSdkClient) ChannelInfo(channelId string) (string, error) {
 
 	// TODO implement
 	return "", errors.New("not implemented")
-	/*response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetCurrentPeer()))
+	/*response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(fsc.GetRandomPeer()))
 	if err != nil {
 		return "", err
 	}

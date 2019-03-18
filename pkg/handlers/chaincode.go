@@ -33,11 +33,16 @@ func PostChaincodesInstallHandler(ec echo.Context) error {
 		return c.String(http.StatusBadRequest, "Channel name is required")
 	}
 
-	if !api.CheckChannelExist(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId) {
+	peer, err := c.CurrentPeer()
+	if err != nil {
+		return err
+	}
+
+	if !api.CheckChannelExist(c.Fsc(), peer, channelId) {
 		return c.String(http.StatusInternalServerError, "Channel not exist")
 	}
 
-	resultString, err := api.ChaincodeInstall(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
+	resultString, err := api.ChaincodeInstall(c.Fsc(), peer, channelId, chaincodeName, chaincodeVersion)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -64,11 +69,16 @@ func PostChaincodesInstantiateHandler(ec echo.Context) error {
 		return c.String(http.StatusBadRequest, "Channel name is required")
 	}
 
-	if !api.CheckChannelExist(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId) {
+	peer, err := c.CurrentPeer()
+	if err != nil {
+		return err
+	}
+
+	if !api.CheckChannelExist(c.Fsc(), peer, channelId) {
 		return c.String(http.StatusInternalServerError, "Channel not exist")
 	}
 
-	resultString, err := api.ChaincodeInstantiate(c.Fsc(), c.Fsc().GetCurrentPeer(), channelId, chaincodeName, chaincodeVersion)
+	resultString, err := api.ChaincodeInstantiate(c.Fsc(), peer, channelId, chaincodeName, chaincodeVersion)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, err.Error())
 	}
@@ -78,7 +88,14 @@ func PostChaincodesInstantiateHandler(ec echo.Context) error {
 
 func GetChaincodesInstalledHandler(ec echo.Context) error {
 	c := ec.(*ApiContext)
-	return GetHandlerWrapper(c, c.Fsc().InstalledChaincodes)
+
+	peer, err := c.CurrentPeer()
+	if err != nil {
+		return err
+	}
+
+	jsonString, err := c.Fsc().InstalledChaincodes(peer)
+	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
 // Get instantiated chaincodes list

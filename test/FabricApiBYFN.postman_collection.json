@@ -71,13 +71,19 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/chaincodes/installed",
+					"raw": "{{host}}/chaincodes/installed?peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"chaincodes",
 						"installed"
+					],
+					"query": [
+						{
+							"key": "peer",
+							"value": "org1/peer0"
+						}
 					]
 				}
 			},
@@ -202,12 +208,18 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels",
+					"raw": "{{host}}/channels?peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"channels"
+					],
+					"query": [
+						{
+							"key": "peer",
+							"value": "org1/peer0"
+						}
 					]
 				}
 			},
@@ -686,19 +698,19 @@
 	],
 	"variable": [
 		{
-			"id": "a64bec7b-e792-41cb-8709-4a440ec3d2e2",
+			"id": "f4690df0-aee9-44f7-a18c-a996cd944249",
 			"key": "host",
 			"value": "localhost:8080",
 			"type": "string"
 		},
 		{
-			"id": "6d526591-4ea4-465a-9ec0-bc15f79424e1",
+			"id": "071660d1-0137-4292-8b10-9cc90cfe78cf",
 			"key": "ch",
 			"value": "mychannel",
 			"type": "string"
 		},
 		{
-			"id": "c34f5846-d33b-4bf3-9fe4-843f5901a73e",
+			"id": "ff97b969-3417-4242-89fa-827e626a87b9",
 			"key": "cc",
 			"value": "mycc",
 			"type": "string"

@@ -7,15 +7,16 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
+	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/core/common/ccprovider"
 	fabriccmn "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/protos/msp"
 	"github.com/pkg/errors"
 )
 
-func (fsc *FabricSdkClient) InstalledChaincodes() (string, error) {
+func (fsc *FabricSdkClient) InstalledChaincodes(peer fab.Peer) (string, error) {
 
-	queryInstalledChaincodesResponse, err := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(fsc.GetCurrentPeer()))
+	queryInstalledChaincodesResponse, err := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(peer))
 	installedChaincodes := queryInstalledChaincodesResponse.GetChaincodes()
 
 	if err != nil {
@@ -28,7 +29,11 @@ func (fsc *FabricSdkClient) InstalledChaincodes() (string, error) {
 
 func (fsc *FabricSdkClient) InstantiatedChaincodes(channelId string) (string, error) {
 
-	queryInstantiatedChaincodesResponse, err := fsc.admin.QueryInstantiatedChaincodes(channelId, resmgmt.WithTargets(fsc.GetCurrentPeer()))
+	peer, err := fsc.GetRandomPeer()
+	if err != nil {
+		return "", err
+	}
+	queryInstantiatedChaincodesResponse, err := fsc.admin.QueryInstantiatedChaincodes(channelId, resmgmt.WithTargets(peer))
 
 	if err != nil {
 		return "", err
@@ -49,9 +54,14 @@ func (fsc *FabricSdkClient) ChaincodeInfo(channelId, chainCodeId string) (string
 		return "", fmt.Errorf("failed to create channel client: %v", err)
 	}
 
+	peer, err := fsc.GetRandomPeer()
+	if err != nil {
+		return "", err
+	}
+
 	response, err := client.Query(
 		channel.Request{ChaincodeID: "lscc", Fcn: "getccdata", Args: args},
-		channel.WithTargetEndpoints(fsc.GetCurrentPeer().URL()),
+		channel.WithTargetEndpoints(peer.URL()),
 	)
 	if err != nil {
 		return "", errors.Errorf("error querying for chaincode info: %v", err)

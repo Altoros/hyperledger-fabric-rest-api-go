@@ -22,19 +22,19 @@ func TestInvoke(t *testing.T) {
 
 	testPeer1 := fcmocks.NewMockPeer("Peer1", "http://peer1.com")
 	args := []string{"arg1", "arg2"}
+	peers := []fab.Peer{testPeer1}
 
 	m := mock_api.NewMockChannelClientProvider(ctrl)
 	m.EXPECT().ChannelClient(invokeChannelID).Return(nil, errors.New("error")).Times(1)
 
-	_, err := Invoke(m, invokeChannelID, invokeCcID, invokeFcn, args)
+	_, err := Invoke(m, invokeChannelID, invokeCcID, invokeFcn, args, peers)
 	assert.Error(t, err)
 
-	peers := []fab.Peer{testPeer1}
 	chClient := setupChannelClient(peers, t)
 
 	m.EXPECT().ChannelClient(invokeChannelID).Return(chClient, nil).Times(1)
 
-	response, err := Invoke(m, invokeChannelID, invokeCcID, invokeFcn, args)
+	response, err := Invoke(m, invokeChannelID, invokeCcID, invokeFcn, args, peers)
 
 	assert.NotEmpty(t, response)
 	assert.Equal(t, nil, err)

@@ -8,7 +8,14 @@ import (
 // Get channels list
 func GetChannelsHandler(ec echo.Context) error {
 	c := ec.(*ApiContext)
-	return GetHandlerWrapper(c, c.Fsc().Channels)
+
+	peer, err := c.CurrentPeer()
+	if err != nil {
+		return err
+	}
+
+	jsonString, err := c.Fsc().Channels(peer)
+	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
 // Create channel
