@@ -80,6 +80,8 @@ func main() {
 	e.GET("/", handlers.WelcomeHandler)
 	e.GET("/health", handlers.HealthCheckHandler)
 
+	e.GET("/config", handlers.GetConfigHandler)
+
 	e.POST("/chaincodes/install", handlers.PostChaincodesInstallHandler)
 	e.POST("/chaincodes/instantiate", handlers.PostChaincodesInstantiateHandler)
 
