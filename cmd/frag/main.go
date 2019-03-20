@@ -77,6 +77,8 @@ func main() {
 
 	e.Use(middleware.CORS()) // TODO make this optional
 
+	e.Use(middleware.Recover())
+
 	e.GET("/", handlers.WelcomeHandler)
 	e.GET("/health", handlers.HealthCheckHandler)
 
@@ -100,6 +102,8 @@ func main() {
 	e.POST("/channels/:channelId/chaincodes/:chaincodeId", handlers.PostInvokeHandler)
 
 	e.POST("/init_test_fixtures", handlers.InitTestFixturesHandler) // TODO remove, for test purposes only
+
+	e.GET("/notifications", handlers.NotificationsHandler)
 
 	e.Logger.Fatal(e.Start(":8080"))
 }

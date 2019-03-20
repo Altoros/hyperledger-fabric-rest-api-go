@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fabric-rest-api-go/pkg/notifications"
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/event"
@@ -119,61 +118,6 @@ func (fsc *FabricSdkClient) Initialize() error {
 	return nil
 }
 
-func (fsc *FabricSdkClient) createEventsListeners(channelId, chaincodeId string) error {
-	// TODO split listeners, activate channel listener on invoke
-
-	// Creation of the client which will enables access to our channel events
-	eventID := ".*"
-
-	eventClient, err := fsc.eventClient(channelId)
-	if err != nil {
-		return err
-	}
-
-	_, chaincodeEventNotifier, err := eventClient.RegisterChaincodeEvent(chaincodeId, eventID)
-	if err != nil {
-		return err
-	}
-	// defer eventClient.Unregister(reg)
-
-	chaincodeEventListener := func() {
-		for {
-			ccEvent := <-chaincodeEventNotifier
-			notifications.HandleChaincodeEvent(ccEvent)
-		}
-	}
-	go chaincodeEventListener()
-
-	// TODO find out about permissions
-	/*_, blockEventNotifier, err := eventClient.RegisterBlockEvent()
-	if err != nil {
-		return err
-	}
-
-	blockEventListener := func() {
-		for {
-			bEvent := <-blockEventNotifier
-			fmt.Println(bEvent.Block.Data)
-		}
-	}
-	go blockEventListener()*/
-
-	_, filteredBlockEventNotifier, err := eventClient.RegisterFilteredBlockEvent()
-	if err != nil {
-		return err
-	}
-
-	filteredBlockEventListener := func() {
-		for {
-			bEvent := <-filteredBlockEventNotifier
-			notifications.HandleFilteredBlockEvent(bEvent)
-		}
-	}
-	go filteredBlockEventListener()
-
-	return nil
-}
-
 func (fsc *FabricSdkClient) ChannelClient(channelId string) (*channel.Client, error) {
 	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
 
@@ -186,7 +130,7 @@ func (fsc *FabricSdkClient) ChannelClient(channelId string) (*channel.Client, er
 	return client, nil
 }
 
-func (fsc *FabricSdkClient) eventClient(channelId string) (*event.Client, error) {
+func (fsc *FabricSdkClient) EventClient(channelId string) (*event.Client, error) {
 	channelProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
 
 	eventClient, err := event.New(channelProvider)
