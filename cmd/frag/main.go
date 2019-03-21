@@ -84,6 +84,8 @@ func main() {
 
 	e.GET("/config", handlers.GetConfigHandler)
 
+	e.POST("/users", handlers.PostUsersHandler)
+
 	e.POST("/chaincodes/install", handlers.PostChaincodesInstallHandler)
 	e.POST("/chaincodes/instantiate", handlers.PostChaincodesInstantiateHandler)
 
