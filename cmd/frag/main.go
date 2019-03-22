@@ -4,7 +4,6 @@ import (
 	"fabric-rest-api-go/pkg/api"
 	"fabric-rest-api-go/pkg/handlers"
 	"flag"
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/pkg/errors"
@@ -62,8 +61,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println("Start listening to localhost:8080")
 
 	e := echo.New()
 
