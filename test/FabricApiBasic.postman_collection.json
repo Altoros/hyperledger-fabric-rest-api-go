@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3873f36d-eafd-4dc3-94ce-fa15ed763fe2",
+		"_postman_id": "0adea064-470b-46c6-8de6-bc39b568092b",
 		"name": "FabricApi Basic network",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -42,7 +42,7 @@
 			"response": []
 		},
 		{
-			"name": "InitTestFixtures",
+			"name": "Install chaincode",
 			"event": [
 				{
 					"listen": "test",
@@ -53,10 +53,8 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Test fixtures created\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.message).to.eql(\"Test channel created, chaincode installed and instantiated\");",
-							"});"
+							"",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -64,18 +62,195 @@
 			],
 			"request": {
 				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{cc}}\",\n    \"version\": \"2.0\",\n    \"channel\": \"{{ch}}\",\n    \"data\": \"H4sIAHQtnlwAA+1YX2/bNhDvq/UpbhpWyEMg22nSYsX60BXtFmDYiiZDH4pgoCXaIiyRGknZM4YA+xr7evskuyMpyXacNG2TDsPCh0gWj8f78/vdkamYkOlcPbjLMR6PHz8+AnxOnhyPN580JuPDw2OYPDo6Gh8+evIY38eTyZOj4wcwvlOrwmiMZRpNYcvFtXLvm/fOQPf8j4yaZQs251AhDqJIVLXSFpJoEM8qG+NjLmzRTNNMVaNiXXNd8nzO9WjGplpko0xpPsoKXJupnI9MISpcVE/hPetqrawyo5pzHUfDKLIoAt8xI7IzbuyLViEYq5vMwh/RRRSNRnAihQU1A1tw6HalibNCGJg1MrNCScD3jJW4IyhZrvEPh1XB5fYykhISky+tYJbnKek5VU5orlhJ81ZBrXnNNHefvQ/0tWAyLznuaBuc0/y3Bs02aUQmQGLh68u+DJ31ibHNFChOaTdzip9OpOV6xjIUq6fpG25qJQ1HxweYh/S1FtKWMom/7Me+cLn4bMjEGNoBuvU9t86BLkJoPjA9byouLQZOq8rNB0dw0yB4AL/C02dARqeo5FX4/Fzmr5lmFUejTRI2eVHwbAFitqnJBRF/CjKsVRoNUKgz5YtnENN0TM4ONMeISh+gl1orncS/yIVUK9mvoNyiZ4MLv+/rBreRWwnC1wVfj5asbDgUvCzVaKV0mUcDrnXnEC48tZj6JHYi8QG8O5+u6bcTjodDZyktQSOlKK+wEAXC27C36o0XY2CaLOPGzJoSKnwi16ItHad+PkH9ww7mS7VwuH5elrsgA4lxz9FjkoGVQAmmtViSo5q/F4K06q5B6Cy7XRiilPlAJCLlUZkG4VDIZBuyTvtlFNL8R+Nwe1fyQzbVFF+xYPVOoimmmc1EJvCns6HkMiH3hvAtTK7a/OxqdVjEOoXphj0nEpTOfb2qmHRFvimtqLFwuXqLikIsDmAVoJQ5J1yShEb+tjulTuUPiDASLRjCjcpqrYwRU1TYyj0FVKjXkPAlPfyPthi4HTRn+Q5fV9grFLK4UrlARxhF13OP4vJufA7PMD1O11Z2bOq+OTh7iPTeU8CaOkd6d7b5/UMoMHft/JYxl7bdgwqbip5Huxuf+ALYp2iO3JSQK/n3n3+hj8xmBaJxDT24VwRKXy4klRulo+sAyMKyq3IVt3XERYdeXi59GljuGmK7s7mUBwzK1BeS6+tIH/frykig7btzbONCzj+pqngk7Skqt0G7w1uk3Y9i4U8LoQ5upfkqHm7xxDhCOB2GZ2qjRnoWviX0GtWyMJxw9lDRtbUe0BMPaN/s0GN0eaMoG2qF7eHKd06HVUxc21C9wl2+DNzKA9hsrah0q7ViePa00n0Rf8UEHdywZs3RsM6oXs1FsDs0WEsnP28u2qUDunay2fZYp+5zUtXn9TJhd/PaUVZ0rd9ztqeqLZj1xZO65kqL3cr1AfQVNzsG3CZ/xf5TwR0Sces8GkJEIMYlLQcokngVIWyQoOjOqxkzPIWfqaSsBDorbEi76fKeXkWshw83XMLvjzqqvXVJcyWKr3rQbpHpRgdUt+vh+fBjaBWa3jXM+klZMVtDKYzlEo9VHnrk95K6aOweJ6EtuiI05Ugb/jvPGrxIQeJxXgqsSpNvWg9naEBAQTpXw+Bq8PSU25ekNdlS3h/Ip2IONVuXivlj+c283j6Yf1LlcKfzz1c3AltuWjgc2ekGnwwpFnSRtUzbnQsvob1ii4BmlqN9SofrhemaT39Hcv6TngThmuypI3vvR11RmCWx84qgpi21ETw+KtzplOulyDYsewpfmdg1EBfji+jf/qfI/bgf9+N+/A/GP/kyRwYAGAAA\",\n    \"peers\": [\n        \"org1/peer0\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{host}}/chaincodes/install",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"chaincodes",
+						"install"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Instantiate chaincode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "89a3dad8-11b7-4316-b6bd-ef0563570580",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{cc}}\",\n    \"version\": \"2.0\",\n    \"channel\": \"{{ch}}\",\n    \"policy\": \"AND('Org1MSP.member')\",\n    \"args\": [],\n    \"peers\": [\n        \"org1/peer0\"\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{host}}/chaincodes/instantiate",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"chaincodes",
+						"instantiate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Channels",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a5ab323b-c6e2-4465-9073-18c4f9720e8a",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Channel name correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].channel_id).to.eql(pm.variables.get(\"ch\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/init_test_fixtures",
+					"raw": "{{host}}/channels",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
-						"init_test_fixtures"
+						"channels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Channel info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13c4684c-366c-4ec0-ba37-76f2297f9327",
+						"exec": [
+							"pm.test(\"Status code is 500\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/channels/{{ch}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"channels",
+						"{{ch}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Chaincode Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d9a283fd-80dc-49a0-9baa-9098b677c864",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Chaincode name correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.name).to.eql(pm.variables.get(\"cc\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/info",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"channels",
+						"{{ch}}",
+						"chaincodes",
+						"{{cc}}",
+						"info"
 					]
 				}
 			},
@@ -168,129 +343,6 @@
 			"response": []
 		},
 		{
-			"name": "Chaincode Info",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "d9a283fd-80dc-49a0-9baa-9098b677c864",
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Chaincode name correct\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.name).to.eql(pm.variables.get(\"cc\"));",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}/info",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"channels",
-						"{{ch}}",
-						"chaincodes",
-						"{{cc}}",
-						"info"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Channels",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "a5ab323b-c6e2-4465-9073-18c4f9720e8a",
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Channel name correct\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData[0].channel_id).to.eql(pm.variables.get(\"ch\"));",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{host}}/channels",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"channels"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Channel info",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "13c4684c-366c-4ec0-ba37-76f2297f9327",
-						"exec": [
-							"pm.test(\"Status code is 500\", function () {",
-							"    pm.response.to.have.status(500);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{host}}/channels/{{ch}}",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"channels",
-						"{{ch}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Channel orgs",
 			"event": [
 				{
@@ -323,50 +375,6 @@
 						"channels",
 						"{{ch}}",
 						"orgs"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Channel peers",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "0115379b-6b00-458a-acdd-9f4c7ceeecab",
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Channel MSP correct\", function () {",
-							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.Peers.length).to.eql(1);",
-							"    pm.expect(jsonData.Peers[0].MSP).to.eql(\"Org1MSP\");",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "{{host}}/channels/{{ch}}/peers",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"channels",
-						"{{ch}}",
-						"peers"
 					]
 				}
 			},
@@ -526,6 +534,50 @@
 							"key": "args",
 							"value": "query,hello"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Channel peers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0115379b-6b00-458a-acdd-9f4c7ceeecab",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Channel MSP correct\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.Peers.length).to.eql(1);",
+							"    pm.expect(jsonData.Peers[0].MSP).to.eql(\"Org1MSP\");",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/channels/{{ch}}/peers",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"channels",
+						"{{ch}}",
+						"peers"
 					]
 				}
 			},

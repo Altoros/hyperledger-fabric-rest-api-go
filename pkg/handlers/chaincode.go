@@ -1,90 +1,75 @@
 package handlers
 
 import (
-	"fabric-rest-api-go/pkg/api"
-	"fmt"
+	"archive/tar"
+	"bytes"
+	"compress/gzip"
 	"github.com/labstack/echo/v4"
-	"net/http"
+	"io"
 )
 
-func PostChaincodesInstallHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+// TODO move to some kind of utils file
+func PrependPathToTar(tarReared io.Reader, prependPath string) ([]byte, error) {
 
-	chaincodeName := c.FormValue("name")
-	chaincodeVersion := c.FormValue("version")
-	channelId := c.FormValue("channel")
-
-	ccHeader, err := c.FormFile("cc")
+	gzr, err := gzip.NewReader(tarReared)
 	if err != nil {
-		return c.String(http.StatusUnprocessableEntity, "Problem with chaincode file upload: "+err.Error())
-	}
-	_ = ccHeader
-	// TODO handle chaincode upload
-
-	if chaincodeName == "" {
-		return c.String(http.StatusBadRequest, "Chaincode name is required")
+		return nil, err
 	}
 
-	if chaincodeVersion == "" {
-		return c.String(http.StatusBadRequest, "Chaincode version is required")
+	tr := tar.NewReader(gzr)
+
+	var codePackage bytes.Buffer
+	gw := gzip.NewWriter(&codePackage)
+	tw := tar.NewWriter(gw)
+
+LOOP:
+	for {
+		header, err := tr.Next()
+
+		switch {
+		case err == io.EOF:
+			break LOOP
+
+		case err != nil:
+			return nil, err
+
+		case header == nil:
+			continue
+		}
+
+		switch header.Typeflag {
+
+		case tar.TypeReg:
+			header.Name = prependPath + header.Name
+
+			if err := tw.WriteHeader(header); err != nil {
+				return nil, err
+			}
+
+			if _, err := io.Copy(tw, tr); err != nil {
+				return nil, err
+			}
+		}
 	}
 
-	if channelId == "" {
-		return c.String(http.StatusBadRequest, "Channel name is required")
-	}
-
-	peer, err := c.CurrentPeer()
+	err = tw.Close()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	if !api.CheckChannelExist(c.Fsc(), peer, channelId) {
-		return c.String(http.StatusInternalServerError, "Channel not exist")
-	}
-
-	resultString, err := api.ChaincodeInstall(c.Fsc(), peer, channelId, chaincodeName, chaincodeVersion)
+	err = gw.Close()
 	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return nil, err
 	}
 
-	return c.JSONBlob(http.StatusOK, []byte( fmt.Sprintf(`{"result": "%s"}`, resultString)))
+	err = gzr.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	return codePackage.Bytes(), nil
 }
 
-func PostChaincodesInstantiateHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
-
-	chaincodeName := c.FormValue("name")
-	chaincodeVersion := c.FormValue("version")
-	channelId := c.FormValue("channel")
-
-	if chaincodeName == "" {
-		return c.String(http.StatusBadRequest, "Chaincode name is required")
-	}
-
-	if chaincodeVersion == "" {
-		return c.String(http.StatusBadRequest, "Chaincode version is required")
-	}
-
-	if channelId == "" {
-		return c.String(http.StatusBadRequest, "Channel name is required")
-	}
-
-	peer, err := c.CurrentPeer()
-	if err != nil {
-		return err
-	}
-
-	if !api.CheckChannelExist(c.Fsc(), peer, channelId) {
-		return c.String(http.StatusInternalServerError, "Channel not exist")
-	}
-
-	resultString, err := api.ChaincodeInstantiate(c.Fsc(), peer, channelId, chaincodeName, chaincodeVersion)
-	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
-	}
-
-	return c.JSONBlob(http.StatusOK, []byte( fmt.Sprintf(`{"result": "%s"}`, resultString)))
-}
 
 func GetChaincodesInstalledHandler(ec echo.Context) error {
 	c := ec.(*ApiContext)

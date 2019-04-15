@@ -89,7 +89,7 @@ func createEventsListeners(ecp EventClientProvider, channelId, chaincodeId strin
 	blockEventListener := func() {
 		for {
 			bEvent := <-blockEventNotifier
-			fmt.Println(bEvent.Block.Data)
+			fmt.Println(bEvent.Block.CcData)
 		}
 	}
 	go blockEventListener()*/
