@@ -13,15 +13,3 @@ func WelcomeHandler(c echo.Context) error {
 func HealthCheckHandler(c echo.Context) error {
 	return c.JSONBlob(http.StatusOK, []byte(`{"alive": true}`))
 }
-
-// TODO remove, replace with chaincode install & instantiate calls
-// Create test channel, install and instantiate test chaincode
-func InitTestFixturesHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
-	err := c.Fsc().InitBasicTestFixturesHandler()
-	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
-	}
-
-	return c.JSONBlob(http.StatusOK, []byte(`{"message": "Test channel created, chaincode installed and instantiated"}`))
-}
