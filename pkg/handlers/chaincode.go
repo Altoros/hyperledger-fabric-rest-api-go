@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"github.com/labstack/echo/v4"
 	"io"
+	"net/http"
 )
 
 // TODO move to some kind of utils file
@@ -76,7 +77,7 @@ func GetChaincodesInstalledHandler(ec echo.Context) error {
 
 	peer, err := c.CurrentPeer()
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	jsonString, err := c.Fsc().InstalledChaincodes(peer)

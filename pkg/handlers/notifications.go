@@ -21,7 +21,7 @@ func NotificationsHandler(ec echo.Context) error {
 
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	defer ws.Close()
 

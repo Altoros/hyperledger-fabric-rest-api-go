@@ -21,39 +21,39 @@ func PostChaincodesInstantiateHandler(ec echo.Context) error {
 
 	instantiateCcRequest := new(InstantiateCcRequest)
 	if err := c.Bind(instantiateCcRequest); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	if instantiateCcRequest.CcName == "" {
-		return c.String(http.StatusBadRequest, "Chaincode name is required")
+		return echo.NewHTTPError(http.StatusBadRequest, "Chaincode name is required")
 	}
 
 	if instantiateCcRequest.CcVersion == "" {
-		return c.String(http.StatusBadRequest, "Chaincode version is required")
+		return echo.NewHTTPError(http.StatusBadRequest, "Chaincode version is required")
 	}
 
 	if instantiateCcRequest.Channel == "" {
-		return c.String(http.StatusBadRequest, "Channel name is required")
+		return echo.NewHTTPError(http.StatusBadRequest, "Channel name is required")
 	}
 
 	if instantiateCcRequest.Policy == "" {
-		return c.String(http.StatusBadRequest, "Chaincode policy is required")
+		return echo.NewHTTPError(http.StatusBadRequest, "Chaincode policy is required")
 	}
 
 	peers, err := c.ParsePeers(instantiateCcRequest.Peers)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	for _, peer := range peers {
 		if !api.CheckChannelExist(c.Fsc(), peer, instantiateCcRequest.Channel) {
-			return c.String(http.StatusInternalServerError, fmt.Sprintf("Channel not exist on peer %s", peer.URL()))
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Channel not exist on peer %s", peer.URL()))
 		}
 	}
 
 	resultString, err := api.ChaincodeInstantiate(c.Fsc(), peers, instantiateCcRequest.Channel, instantiateCcRequest.CcName, instantiateCcRequest.CcVersion, instantiateCcRequest.Policy, instantiateCcRequest.Args)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSONBlob(http.StatusOK, []byte( fmt.Sprintf(`{"result": "%s"}`, resultString)))

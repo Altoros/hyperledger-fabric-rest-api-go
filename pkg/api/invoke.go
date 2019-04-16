@@ -21,7 +21,7 @@ func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args 
 	// TODO txStatus event support
 	/*_, txStatusEventNotifier, err := eventClient.RegisterTxStatusEvent()
 		if err != nil {
-			return err
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 
 		txStatusEventListener := func() {

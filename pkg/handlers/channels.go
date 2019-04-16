@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
 // Get channels list
@@ -11,7 +12,7 @@ func GetChannelsHandler(ec echo.Context) error {
 
 	peer, err := c.CurrentPeer()
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	jsonString, err := c.Fsc().Channels(peer)

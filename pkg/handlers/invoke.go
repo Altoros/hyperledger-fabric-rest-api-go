@@ -18,24 +18,24 @@ func PostInvokeHandler(ec echo.Context) error {
 
 	invokeRequest := new(InvokeRequest)
 	if err := c.Bind(invokeRequest); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	fcn := invokeRequest.Fcn
 	args := invokeRequest.Args
 
 	if fcn == "" {
-		return c.String(http.StatusBadRequest, "Fcn is required")
+		return echo.NewHTTPError(http.StatusBadRequest, "Fcn is required")
 	}
 
 	peers, err := c.ParsePeers(invokeRequest.Peers)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	resultString, err := api.Invoke(c.Fsc(), c.Param("channelId"), c.Param("chaincodeId"), fcn, args, peers)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSONBlob(http.StatusOK, []byte(fmt.Sprintf(`{"result": "%s"}`, resultString)))

@@ -15,7 +15,7 @@ type userCredentials struct {
 func PostUsersHandler(c echo.Context) error {
 	userCredentials := new(userCredentials)
 	if err := c.Bind(userCredentials); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	token := jwt.New(jwt.SigningMethodHS256)
@@ -27,7 +27,7 @@ func PostUsersHandler(c echo.Context) error {
 
 	t, err := token.SignedString([]byte("secret"))
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
