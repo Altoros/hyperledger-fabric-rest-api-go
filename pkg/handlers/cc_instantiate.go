@@ -47,7 +47,7 @@ func PostChaincodesInstantiateHandler(ec echo.Context) error {
 
 	for _, peer := range peers {
 		if !api.CheckChannelExist(c.Fsc(), peer, instantiateCcRequest.Channel) {
-			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Channel not exist on peer %s", peer.URL()))
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("Channel %s not exist on peer %s", instantiateCcRequest.Channel, peer.URL()))
 		}
 	}
 
