@@ -1,7 +1,9 @@
 package notifications
 
 import (
+	"container/list"
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/event"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
@@ -11,13 +13,25 @@ type EventClientProvider interface {
 	EventClient(channelId string) (*event.Client, error)
 }
 
-type EventNotification struct {
-	EventType string `json:"event_type"`
+type FilteredBlockEventNotification struct {
+	EventType string                  `json:"event_type"`
 	Payload   *fab.FilteredBlockEvent `json:"payload"`
 }
 
+type BlockEventNotification struct {
+	EventType string          `json:"event_type"`
+	Payload   *fab.BlockEvent `json:"payload"`
+}
+
+type ChaincodeEventNotification struct {
+	EventType string       `json:"event_type"`
+	Payload   *fab.CCEvent `json:"payload"`
+}
+
 const (
-	BlockEvent = "block"
+	FilteredBlockEvent = "block"
+	BlockEvent         = "full_block"
+	CcEvent            = "cc_event"
 )
 
 func CreateFilteredBlockEventListener(ecp EventClientProvider, ws *websocket.Conn, channelId string) error {
@@ -37,7 +51,102 @@ func CreateFilteredBlockEventListener(ecp EventClientProvider, ws *websocket.Con
 		for {
 			bEvent := <-filteredBlockEventNotifier
 
-			eventNotification := EventNotification{EventType: BlockEvent, Payload: bEvent}
+			eventNotification := FilteredBlockEventNotification{EventType: FilteredBlockEvent, Payload: bEvent}
+
+			jsonEventNotification, err := json.Marshal(eventNotification)
+			if err != nil {
+				break
+			}
+
+			err = WriteSocket(ws, jsonEventNotification)
+			if err != nil {
+				break
+			}
+		}
+	}
+	go filteredBlockEventListener()
+
+	return nil
+}
+
+var WsConnPool = make(map[string]*list.List)
+
+func CreateChaincodeEventListener(ecp EventClientProvider, ws *websocket.Conn, channelId, chaincodeId, eventIdTemplate string) error {
+	eventClient, err := ecp.EventClient(channelId)
+	if err != nil {
+		return err
+	}
+
+	if eventIdTemplate == "" {
+		// if eventIdTemplate is empty, will listen all events
+		eventIdTemplate = ".*"
+	}
+
+	EventKey := fmt.Sprintf("{%s}{%s}{%s}", channelId, chaincodeId, eventIdTemplate)
+
+	// add connection to pool, if event already registered
+	if WsConnPool[EventKey] != nil {
+		WsConnPool[EventKey].PushFront(ws)
+		return nil
+	}
+	WsConnPool[EventKey] = list.New()
+	WsConnPool[EventKey].PushFront(ws)
+
+	reg, chaincodeEventNotifier, err := eventClient.RegisterChaincodeEvent(chaincodeId, eventIdTemplate)
+	if err != nil {
+		return err
+	}
+
+	chaincodeEventListener := func() {
+		defer eventClient.Unregister(reg)
+
+		for {
+			ccEvent := <-chaincodeEventNotifier
+
+			eventNotification := ChaincodeEventNotification{EventType: CcEvent, Payload: ccEvent}
+
+			jsonEventNotification, err := json.Marshal(eventNotification)
+			if err != nil {
+				break
+			}
+
+			l := WsConnPool[EventKey]
+			for e := l.Front(); e != nil; e = e.Next() {
+				conn := e.Value.(*websocket.Conn)
+				err = WriteSocket(conn, jsonEventNotification)
+				if err != nil {
+					l.Remove(e)
+				}
+			}
+		}
+	}
+	go chaincodeEventListener()
+
+	return nil
+}
+
+// TODO split listeners, activate channel listener on invoke
+
+// TODO add handler
+// TODO find out about permissions
+func CreateBlockEventListener(ecp EventClientProvider, ws *websocket.Conn, channelId string) error {
+	eventClient, err := ecp.EventClient(channelId)
+	if err != nil {
+		return err
+	}
+
+	reg, blockEventNotifier, err := eventClient.RegisterBlockEvent()
+	if err != nil {
+		return err
+	}
+
+	blockEventListener := func() {
+		defer eventClient.Unregister(reg)
+
+		for {
+			fbEvent := <-blockEventNotifier
+
+			eventNotification := BlockEventNotification{EventType: FilteredBlockEvent, Payload: fbEvent}
 
 			jsonEventNotification, err := json.Marshal(eventNotification)
 			if err != nil {
@@ -50,49 +159,7 @@ func CreateFilteredBlockEventListener(ecp EventClientProvider, ws *websocket.Con
 			}
 		}
 	}
-	go filteredBlockEventListener()
-
-	return nil
-}
-
-func createEventsListeners(ecp EventClientProvider, channelId, chaincodeId string) error {
-	// TODO split listeners, activate channel listener on invoke
-
-	// Creation of the client which will enables access to our channel events
-	eventID := ".*"
-
-	eventClient, err := ecp.EventClient(channelId)
-	if err != nil {
-		return err
-	}
-
-	_, chaincodeEventNotifier, err := eventClient.RegisterChaincodeEvent(chaincodeId, eventID)
-	if err != nil {
-		return err
-	}
-	// defer eventClient.Unregister(reg)
-
-	chaincodeEventListener := func() {
-		for {
-			ccEvent := <-chaincodeEventNotifier
-			HandleChaincodeEvent(ccEvent)
-		}
-	}
-	go chaincodeEventListener()
-
-	// TODO find out about permissions
-	/*_, blockEventNotifier, err := eventClient.RegisterBlockEvent()
-	if err != nil {
-		return err
-	}
-
-	blockEventListener := func() {
-		for {
-			bEvent := <-blockEventNotifier
-			fmt.Println(bEvent.Block.CcData)
-		}
-	}
-	go blockEventListener()*/
+	go blockEventListener()
 
 	return nil
 }
