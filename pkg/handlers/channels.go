@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"errors"
+	"fabric-rest-api-go/pkg/api"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -21,8 +21,8 @@ func GetChannelsHandler(ec echo.Context) error {
 
 // Create channel
 func PostChannelsHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
-	return GetJsonOutputWrapper(c, "", errors.New("not implemented"))
+	// TODO implement
+	return api.ChannelCreate("")
 }
 
 func GetChannelsChannelIdHandler(ec echo.Context) error {
