@@ -142,7 +142,6 @@ func (fsc *FabricSdkClient) EventClient(channelId string) (*event.Client, error)
 	return eventClient, nil
 }
 
-// TODO get rid off most calls to GetRandomPeer()
 func (fsc *FabricSdkClient) GetRandomPeer() (fab.Peer, error) {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 

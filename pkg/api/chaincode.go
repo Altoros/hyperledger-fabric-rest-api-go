@@ -27,12 +27,8 @@ func (fsc *FabricSdkClient) InstalledChaincodes(peer fab.Peer) (string, error) {
 	return string(jsonBytes), nil
 }
 
-func (fsc *FabricSdkClient) InstantiatedChaincodes(channelId string) (string, error) {
+func (fsc *FabricSdkClient) InstantiatedChaincodes(channelId string, peer fab.Peer) (string, error) {
 
-	peer, err := fsc.GetRandomPeer()
-	if err != nil {
-		return "", err
-	}
 	queryInstantiatedChaincodesResponse, err := fsc.admin.QueryInstantiatedChaincodes(channelId, resmgmt.WithTargets(peer))
 
 	if err != nil {
@@ -43,7 +39,7 @@ func (fsc *FabricSdkClient) InstantiatedChaincodes(channelId string) (string, er
 	return string(jsonBytes), nil
 }
 
-func (fsc *FabricSdkClient) ChaincodeInfo(channelId, chainCodeId string) (string, error) {
+func (fsc *FabricSdkClient) ChaincodeInfo(channelId, chainCodeId string, peer fab.Peer) (string, error) {
 
 	var args [][]byte
 	args = append(args, []byte(channelId))
@@ -52,11 +48,6 @@ func (fsc *FabricSdkClient) ChaincodeInfo(channelId, chainCodeId string) (string
 	client, err := fsc.ChannelClient(channelId)
 	if err != nil {
 		return "", fmt.Errorf("failed to create channel client: %v", err)
-	}
-
-	peer, err := fsc.GetRandomPeer()
-	if err != nil {
-		return "", err
 	}
 
 	response, err := client.Query(

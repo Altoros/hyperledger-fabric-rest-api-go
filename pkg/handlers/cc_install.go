@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/utils"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -68,7 +69,7 @@ func PostChaincodesInstallHandler(ec echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	ccTarBytes, err = PrependPathToTar(bytes.NewReader(ccTarBytes), "src/chaincode/"+installRequest.CcName+"/")
+	ccTarBytes, err = utils.PrependPathToTar(bytes.NewReader(ccTarBytes), "src/chaincode/"+installRequest.CcName+"/")
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
