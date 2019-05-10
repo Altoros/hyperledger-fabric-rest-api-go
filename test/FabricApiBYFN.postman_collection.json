@@ -385,7 +385,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=a",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=a&peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
@@ -403,6 +403,10 @@
 						{
 							"key": "args",
 							"value": "a"
+						},
+						{
+							"key": "peer",
+							"value": "org1/peer0"
 						}
 					]
 				}
@@ -439,7 +443,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=b",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=b&peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
@@ -457,6 +461,10 @@
 						{
 							"key": "args",
 							"value": "b"
+						},
+						{
+							"key": "peer",
+							"value": "org1/peer0"
 						}
 					]
 				}
@@ -497,7 +505,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"b\",\n        \"a\",\n        \"10\"\n    ]\n}"
+					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"b\",\n        \"a\",\n        \"10\"\n    ],\n    \"peers\": [\n        \"org1/peer0\",\n        \"org2/peer0\"\n    ]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}",
@@ -544,7 +552,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=a",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=a&peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
@@ -562,6 +570,10 @@
 						{
 							"key": "args",
 							"value": "a"
+						},
+						{
+							"key": "peer",
+							"value": "org1/peer0"
 						}
 					]
 				}
@@ -598,7 +610,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=b",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=b&peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
@@ -616,6 +628,10 @@
 						{
 							"key": "args",
 							"value": "b"
+						},
+						{
+							"key": "peer",
+							"value": "org1/peer0"
 						}
 					]
 				}
@@ -656,7 +672,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"a\",\n        \"b\",\n        \"10\"\n    ]\n}"
+					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"a\",\n        \"b\",\n        \"10\"\n    ],\n    \"peers\": [\n        \"org1/peer0\",\n        \"org2/peer0\"\n    ]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}",
@@ -698,19 +714,19 @@
 	],
 	"variable": [
 		{
-			"id": "f4690df0-aee9-44f7-a18c-a996cd944249",
+			"id": "c5f9b892-d63e-46a8-96cc-d51aa42e5487",
 			"key": "host",
 			"value": "localhost:8080",
 			"type": "string"
 		},
 		{
-			"id": "071660d1-0137-4292-8b10-9cc90cfe78cf",
+			"id": "27ed0511-6278-480f-b0bd-8e908c7a532b",
 			"key": "ch",
 			"value": "mychannel",
 			"type": "string"
 		},
 		{
-			"id": "ff97b969-3417-4242-89fa-827e626a87b9",
+			"id": "50e30925-0d97-40ff-8001-53641f4c1ffc",
 			"key": "cc",
 			"value": "mycc",
 			"type": "string"

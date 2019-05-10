@@ -8,14 +8,29 @@ import (
 	"github.com/pkg/errors"
 )
 
-func ChaincodeInstantiate(channelClientProvider AdminProvider, _ fab.Peer, channelId, chaincodeId, chaincodeVersion string) (string, error) {
+func ChaincodeInstantiate(channelClientProvider AdminProvider, peers []fab.Peer, channelId, ccName, chaincodeVersion, policyString string, args []string) (string, error) {
 
-	// TODO implement policy parameters
+	// TODO implement more complex policy parameters
 	// Set up chaincode policy
-	ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
+	// example: ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
+
+	ccPolicy, err := cauthdsl.FromString(policyString)
+	if err != nil {
+		return "", err
+	}
+
+	requestArgs := [][]byte{[]byte("init"),}
+	// Prepare arguments
+	for _, arg := range args {
+		requestArgs = append(requestArgs, []byte(arg))
+	}
 
 	// TODO find out, seems like Path is redundant
-	resp, err := channelClientProvider.Admin().InstantiateCC(channelId, resmgmt.InstantiateCCRequest{Name: chaincodeId, Path: "chaincode", Version: chaincodeVersion, Args: [][]byte{[]byte("init")}, Policy: ccPolicy})
+	resp, err := channelClientProvider.Admin().InstantiateCC(
+		channelId,
+		resmgmt.InstantiateCCRequest{Name: ccName, Path: "chaincode/" + ccName + "/", Version: chaincodeVersion, Args: requestArgs, Policy: ccPolicy},
+		resmgmt.WithTargets(peers...),
+	)
 	if err != nil || resp.TransactionID == "" {
 		return "", errors.WithMessage(err, "failed to instantiate the chaincode")
 	}

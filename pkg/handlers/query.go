@@ -15,17 +15,17 @@ func GetQueryHandler(ec echo.Context) error {
 	args := strings.Split(c.FormValue("args"), ",")
 
 	if fcn == "" {
-		return c.String(http.StatusBadRequest, "Fcn is required")
+		return echo.NewHTTPError(http.StatusBadRequest, "Fcn is required")
 	}
 
 	peer, err := c.CurrentPeer()
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	resultString, err := api.Query(c.Fsc(), peer, c.Param("channelId"), c.Param("chaincodeId"), fcn, args)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
 	resultJsonObj := gabs.New()

@@ -3,3 +3,5 @@ org:
   name: "org1"
 user:
   name: "User1"
+ca:
+  url: localhost:7054

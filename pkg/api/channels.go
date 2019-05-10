@@ -57,7 +57,7 @@ func (fsc *FabricSdkClient) ChannelOrgs(channelId string) (string, error) {
 }
 
 func (fsc *FabricSdkClient) ChannelPeers(channelId string) (string, error) {
-	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
+	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.ApiConfig.User.Name))
 
 	chContext, err := chProvider()
 	if err != nil {

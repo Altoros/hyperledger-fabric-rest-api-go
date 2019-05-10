@@ -13,7 +13,7 @@ type ConfigResponse struct {
 func GetConfigHandler(ec echo.Context) error {
 	c := ec.(*ApiContext)
 
-	configResponse := ConfigResponse{Org: c.Fsc().OrgName}
+	configResponse := ConfigResponse{Org: c.Fsc().ApiConfig.Org.Name}
 
 	jsonString, _ := json.Marshal(configResponse)
 

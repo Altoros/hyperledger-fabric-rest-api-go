@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fabric-rest-api-go/pkg/notifications"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -21,13 +22,13 @@ func NotificationsHandler(ec echo.Context) error {
 
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	defer ws.Close()
 
 	wsList = append(wsList, ws)
 
-	LOOP:
+LOOP:
 	for {
 		messageType, msg, err := ws.ReadMessage()
 		if err != nil {
@@ -61,8 +62,14 @@ func NotificationsHandler(ec echo.Context) error {
 }
 
 type EventSubscribeMessage struct {
-	Event     string `json:"event"`
-	ChannelId string `json:"channel"`
+	Event       string `json:"event"`
+	ChannelId   string `json:"channel"`
+	ChaincodeId string `json:"chaincode"`
+	CcEventId   string `json:"cc_event"`
+}
+
+type NotificationsServiceMessage struct {
+	Message string `json:"message"`
 }
 
 func ProcessMessage(c *ApiContext, ws *websocket.Conn, msg []byte) error {
@@ -74,8 +81,56 @@ func ProcessMessage(c *ApiContext, ws *websocket.Conn, msg []byte) error {
 	}
 
 	switch EventSubscribeMessage.Event {
-	case notifications.BlockEvent:
-		err := notifications.CreateFilteredBlockEventListener(c.Fsc(), ws, EventSubscribeMessage.ChannelId)
+
+	case notifications.FilteredBlockEvent:
+		err := notifications.CreateFilteredBlockEventListener(
+			c.Fsc(),
+			ws,
+			EventSubscribeMessage.ChannelId,
+		)
+
+		if err != nil {
+			return err
+		}
+
+		nsm := NotificationsServiceMessage{
+			Message: fmt.Sprintf("Successfully subscribed to channel %s block events",
+				EventSubscribeMessage.ChannelId,
+			),
+		}
+		nsmJson, _ := json.Marshal(nsm)
+
+		//err = ws.WriteMessage(websocket.TextMessage, nsmJson)
+		err = notifications.WriteSocket(ws, nsmJson)
+		if err != nil {
+			return err
+		}
+		break
+
+	case notifications.CcEvent:
+		err := notifications.CreateChaincodeEventListener(
+			c.Fsc(),
+			ws,
+			EventSubscribeMessage.ChannelId,
+			EventSubscribeMessage.ChaincodeId,
+			EventSubscribeMessage.CcEventId,
+		)
+
+		if err != nil {
+			return err
+		}
+
+		nsm := NotificationsServiceMessage{
+			Message: fmt.Sprintf("Successfully subscribed to channel %s, chaincode %s events %s",
+				EventSubscribeMessage.ChannelId,
+				EventSubscribeMessage.ChaincodeId,
+				EventSubscribeMessage.CcEventId,
+			),
+		}
+		nsmJson, _ := json.Marshal(nsm)
+
+		err = notifications.WriteSocket(ws, nsmJson)
+		//err =  ws.WriteMessage(websocket.TextMessage, nsmJson)
 		if err != nil {
 			return err
 		}

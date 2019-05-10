@@ -27,6 +27,23 @@ type PeerParsed struct {
 	Peer, Org string
 }
 
+func (c *ApiContext) ParsePeers(peersStrings []string) ([]fab.Peer, error) {
+	var peers []fab.Peer
+	for _, peerString := range peersStrings {
+		if peerParsed, success := ParsePeerFormat(peerString); success {
+			peer, err := c.Fsc().GetPeerByOrgAndServerName(peerParsed.Org, fmt.Sprintf(`^%s\.`, peerParsed.Peer))
+
+			if err != nil {
+				return nil, errors.Wrapf(err, `problem while fetching peer by template "%s"`, peerString)
+			}
+
+			peers = append(peers, peer)
+		}
+	}
+
+	return peers, nil
+}
+
 func ParsePeerFormat(peerString string) (*PeerParsed, bool) {
 	r, _ := regexp.Compile(`^(?P<ORG>[^/]*)/(?P<PEER>[^/]*)$`)
 	if r.MatchString(peerString) {
