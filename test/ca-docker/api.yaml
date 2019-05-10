@@ -1,0 +1,7 @@
+org:
+  admin: Admin
+  name: Org1
+user:
+  name: User1
+ca:
+  host: ca.example.com:7054

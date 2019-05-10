@@ -21,12 +21,9 @@ import (
 type FabricSdkClient struct {
 	ConfigFile string
 
-	initialized bool
+	ApiConfig *Config
 
-	OrgID    string
-	OrgAdmin string
-	OrgName  string
-	UserName string
+	initialized bool
 
 	admin *resmgmt.Client
 	sdk   *fabsdk.FabricSDK
@@ -55,7 +52,7 @@ func (fsc *FabricSdkClient) Initialize() error {
 	fmt.Println("SDK created")
 
 	// The resource management client is responsible for managing Channels (create/update channel)
-	resourceManagerClientContext := fsc.sdk.Context(fabsdk.WithUser(fsc.OrgAdmin), fabsdk.WithOrg(fsc.OrgName))
+	resourceManagerClientContext := fsc.sdk.Context(fabsdk.WithUser(fsc.ApiConfig.Org.Admin), fabsdk.WithOrg(fsc.ApiConfig.Org.Name))
 	if err != nil {
 		return errors.WithMessage(err, "failed to load Admin identity")
 	}
@@ -67,12 +64,12 @@ func (fsc *FabricSdkClient) Initialize() error {
 	fmt.Println("Resource management client created")
 
 	// The MSP client allow us to retrieve user information from their identity, like its signing identity which we will need to save the channel
-	mspClient, err := mspclient.New(sdk.Context(), mspclient.WithOrg(fsc.OrgName))
+	mspClient, err := mspclient.New(sdk.Context(), mspclient.WithOrg(fsc.ApiConfig.Org.Name))
 	if err != nil {
 		return errors.WithMessage(err, "failed to create MSP client")
 	}
 
-	adminIdentity, err := mspClient.GetSigningIdentity(fsc.OrgAdmin)
+	adminIdentity, err := mspClient.GetSigningIdentity(fsc.ApiConfig.Org.Admin)
 	if err != nil {
 		return errors.WithMessage(err, "failed to get admin signing identity")
 	}
@@ -119,7 +116,7 @@ func (fsc *FabricSdkClient) Initialize() error {
 }
 
 func (fsc *FabricSdkClient) ChannelClient(channelId string) (*channel.Client, error) {
-	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
+	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.ApiConfig.User.Name))
 
 	client, err := channel.New(chProvider)
 	if err != nil {
@@ -131,7 +128,7 @@ func (fsc *FabricSdkClient) ChannelClient(channelId string) (*channel.Client, er
 }
 
 func (fsc *FabricSdkClient) EventClient(channelId string) (*event.Client, error) {
-	channelProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.UserName))
+	channelProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.ApiConfig.User.Name))
 
 	eventClient, err := event.New(channelProvider)
 	if err != nil {

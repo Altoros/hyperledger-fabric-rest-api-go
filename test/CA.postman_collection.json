@@ -1,0 +1,141 @@
+{
+	"info": {
+		"_postman_id": "1a3a7139-c1b9-4b8c-95f4-e4cc2c5a548f",
+		"name": "CA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "FRAG enroll",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "936be6a2-41f3-4dee-9aed-cbf4610c26f7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"CA responded with PEM certificate\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pem = atob(jsonData.result);",
+							"    pm.expect(pem).to.include(\"-----BEGIN CERTIFICATE-----\")",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"admin\",\n    \"password\": \"adminpw\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/ca/enroll",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"ca",
+						"enroll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FRAG register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6d635e98-b8bc-4e96-a26a-6985d60444d7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Return password string as result\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result.length > 5 && jsonData.result.length < 100).to.equal(true)",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"new_user_login\"\n}"
+				},
+				"url": {
+					"raw": "{{host}}/ca/register",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"ca",
+						"register"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bf94e4e6-1ea4-43ce-9417-a5bdac4a5388",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f215ef06-2665-40f9-bede-302efd69d2e6",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "74987a8a-8e6b-4b1a-818b-9c16aef73ba6",
+			"key": "host",
+			"value": "localhost:8080",
+			"type": "string"
+		}
+	]
+}
