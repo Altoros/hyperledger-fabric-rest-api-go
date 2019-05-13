@@ -1,4 +1,4 @@
-package api
+package sdk
 
 import (
 	"fmt"
@@ -171,6 +171,10 @@ func (fsc *FabricSdkClient) GetPeerByOrgAndServerName(org, serverNameTemplate st
 
 func (fsc *FabricSdkClient) Admin() *resmgmt.Client {
 	return fsc.admin
+}
+
+func (fsc *FabricSdkClient) Sdk() *fabsdk.FabricSDK{
+	return fsc.sdk
 }
 
 type ChannelClientProvider interface {

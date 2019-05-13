@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/sdk"
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/labstack/echo/v4"
@@ -12,14 +12,14 @@ import (
 type ApiContext struct {
 	echo.Context
 
-	fsc *api.FabricSdkClient
+	fsc *sdk.FabricSdkClient
 }
 
-func (c *ApiContext) Fsc() *api.FabricSdkClient {
+func (c *ApiContext) Fsc() *sdk.FabricSdkClient {
 	return c.fsc
 }
 
-func (c *ApiContext) SetFsc(fsc *api.FabricSdkClient) {
+func (c *ApiContext) SetFsc(fsc *sdk.FabricSdkClient) {
 	c.fsc = fsc
 }
 

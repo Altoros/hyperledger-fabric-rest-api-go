@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fabric-rest-api-go/pkg/api"
 	"fabric-rest-api-go/pkg/handlers"
+	"fabric-rest-api-go/pkg/sdk"
 	"flag"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -15,12 +15,12 @@ func main() {
 	flag.StringVar(&sdkConfigPath, "sdk-config", "./configs/network.yaml", "Path to SDK configuration file (example: -sdk-config=./network.yaml)")
 	flag.Parse()
 
-	apiConfig, err := api.LoadConfiguration(apiConfigPath)
+	apiConfig, err := sdk.LoadConfiguration(apiConfigPath)
 	if err != nil {
 		panic(err)
 	}
 
-	fsc := api.FabricSdkClient{
+	fsc := sdk.FabricSdkClient{
 		ConfigFile: sdkConfigPath,
 		ApiConfig:  apiConfig,
 	}

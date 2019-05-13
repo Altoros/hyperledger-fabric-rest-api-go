@@ -3,14 +3,15 @@ package api
 import (
 	"encoding/json"
 	"errors"
+	"fabric-rest-api-go/pkg/sdk"
 	"github.com/Jeffail/gabs"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 )
 
-func (fsc *FabricSdkClient) Channels(peer fab.Peer) (string, error) {
-	response, err := fsc.admin.QueryChannels(resmgmt.WithTargets(peer))
+func Channels(fsc sdk.AdminProvider, peer fab.Peer) (string, error) {
+	response, err := fsc.Admin().QueryChannels(resmgmt.WithTargets(peer))
 	if err != nil {
 		return "", err
 	}
@@ -23,7 +24,7 @@ func (fsc *FabricSdkClient) Channels(peer fab.Peer) (string, error) {
 	return string(jsonBytes), nil
 }
 
-func (fsc *FabricSdkClient) ChannelInfo(channelId string) (string, error) {
+func ChannelInfo(fsc sdk.AdminProvider, channelId string) (string, error) {
 
 	// TODO implement
 	return "", errors.New("not implemented")
@@ -51,13 +52,13 @@ func (fsc *FabricSdkClient) ChannelInfo(channelId string) (string, error) {
 	return string(jsonBytes), nil*/
 }
 
-func (fsc *FabricSdkClient) ChannelOrgs(channelId string) (string, error) {
+func ChannelOrgs(fsc sdk.AdminProvider, channelId string) (string, error) {
 	// TODO implement
 	return "", errors.New("not implemented")
 }
 
-func (fsc *FabricSdkClient) ChannelPeers(channelId string) (string, error) {
-	chProvider := fsc.sdk.ChannelContext(channelId, fabsdk.WithUser(fsc.ApiConfig.User.Name))
+func ChannelPeers(fsc *sdk.FabricSdkClient, channelId string) (string, error) {
+	chProvider := fsc.Sdk().ChannelContext(channelId, fabsdk.WithUser(fsc.ApiConfig.User.Name))
 
 	chContext, err := chProvider()
 	if err != nil {
@@ -105,7 +106,7 @@ func PeerToJsonObjects(peer fab.Peer) *gabs.Container {
 	return jsonObj
 }
 
-func CheckChannelExist(adminProvider AdminProvider, peer fab.Peer, channelId string) bool{
+func CheckChannelExist(adminProvider sdk.AdminProvider, peer fab.Peer, channelId string) bool{
 	response, _ := adminProvider.Admin().QueryChannels(resmgmt.WithTargets(peer))
 	channels := response.GetChannels()
 

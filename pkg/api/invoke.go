@@ -1,12 +1,13 @@
 package api
 
 import (
+	"fabric-rest-api-go/pkg/sdk"
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 )
 
-func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args []string, peers []fab.Peer) (string, error) {
+func Invoke(fsc sdk.ChannelClientProvider, channelId, chaincodeId, fcn string, args []string, peers []fab.Peer) (string, error) {
 
 	// Prepare arguments
 	var requestArgs [][]byte

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fabric-rest-api-go/pkg/sdk"
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
@@ -8,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func ChaincodeInstantiate(channelClientProvider AdminProvider, peers []fab.Peer, channelId, ccName, chaincodeVersion, policyString string, args []string) (string, error) {
+func ChaincodeInstantiate(channelClientProvider sdk.AdminProvider, peers []fab.Peer, channelId, ccName, chaincodeVersion, policyString string, args []string) (string, error) {
 
 	// TODO implement more complex policy parameters
 	// Set up chaincode policy

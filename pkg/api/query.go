@@ -1,12 +1,13 @@
 package api
 
 import (
+	"fabric-rest-api-go/pkg/sdk"
 	"fmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 )
 
-func Query(channelClientProvider ChannelClientProvider, peer fab.Peer, channelId, chaincodeId, fcn string, args []string) (string, error) {
+func Query(channelClientProvider sdk.ChannelClientProvider, peer fab.Peer, channelId, chaincodeId, fcn string, args []string) (string, error) {
 
 	// Prepare arguments
 	var requestArgs [][]byte

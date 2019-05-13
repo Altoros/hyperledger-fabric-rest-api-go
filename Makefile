@@ -135,6 +135,8 @@ ca_docker_up:
 ca_docker_down:
 	@docker stop frag
 	@docker rm frag
+	@docker stop frag-tls
+	@docker rm frag-tls
 
 ca_test:
 	@./scripts/ca-test.sh
