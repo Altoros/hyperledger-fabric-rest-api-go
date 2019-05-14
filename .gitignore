@@ -1,6 +1,5 @@
 .idea
 .directory
 vendor
-test/fabric-samples
 build
 _tmp

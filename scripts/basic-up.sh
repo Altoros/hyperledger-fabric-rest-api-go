@@ -7,6 +7,6 @@ echo "Preparing basic network ..."
 cloneFabricSamples
 
 
-cd test/fabric-samples/basic-network
+cd _tmp/fabric-samples/basic-network
 
 ./start.sh
