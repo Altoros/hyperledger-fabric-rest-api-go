@@ -1,5 +1,7 @@
 org:
-  admin: "Admin"
-  name: "org1"
+  admin: Admin
+  name: org1
 user:
-  name: "User1"
+  name: User1
+ca:
+  host: localhost:7054

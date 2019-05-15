@@ -72,7 +72,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\": \"{{cc}}\",\n    \"version\": \"2.0\",\n    \"channel\": \"{{ch}}\",\n    \"data\": \"H4sIAHQtnlwAA+1YX2/bNhDvq/UpbhpWyEMg22nSYsX60BXtFmDYiiZDH4pgoCXaIiyRGknZM4YA+xr7evskuyMpyXacNG2TDsPCh0gWj8f78/vdkamYkOlcPbjLMR6PHz8+AnxOnhyPN580JuPDw2OYPDo6Gh8+evIY38eTyZOj4wcwvlOrwmiMZRpNYcvFtXLvm/fOQPf8j4yaZQs251AhDqJIVLXSFpJoEM8qG+NjLmzRTNNMVaNiXXNd8nzO9WjGplpko0xpPsoKXJupnI9MISpcVE/hPetqrawyo5pzHUfDKLIoAt8xI7IzbuyLViEYq5vMwh/RRRSNRnAihQU1A1tw6HalibNCGJg1MrNCScD3jJW4IyhZrvEPh1XB5fYykhISky+tYJbnKek5VU5orlhJ81ZBrXnNNHefvQ/0tWAyLznuaBuc0/y3Bs02aUQmQGLh68u+DJ31ibHNFChOaTdzip9OpOV6xjIUq6fpG25qJQ1HxweYh/S1FtKWMom/7Me+cLn4bMjEGNoBuvU9t86BLkJoPjA9byouLQZOq8rNB0dw0yB4AL/C02dARqeo5FX4/Fzmr5lmFUejTRI2eVHwbAFitqnJBRF/CjKsVRoNUKgz5YtnENN0TM4ONMeISh+gl1orncS/yIVUK9mvoNyiZ4MLv+/rBreRWwnC1wVfj5asbDgUvCzVaKV0mUcDrnXnEC48tZj6JHYi8QG8O5+u6bcTjodDZyktQSOlKK+wEAXC27C36o0XY2CaLOPGzJoSKnwi16ItHad+PkH9ww7mS7VwuH5elrsgA4lxz9FjkoGVQAmmtViSo5q/F4K06q5B6Cy7XRiilPlAJCLlUZkG4VDIZBuyTvtlFNL8R+Nwe1fyQzbVFF+xYPVOoimmmc1EJvCns6HkMiH3hvAtTK7a/OxqdVjEOoXphj0nEpTOfb2qmHRFvimtqLFwuXqLikIsDmAVoJQ5J1yShEb+tjulTuUPiDASLRjCjcpqrYwRU1TYyj0FVKjXkPAlPfyPthi4HTRn+Q5fV9grFLK4UrlARxhF13OP4vJufA7PMD1O11Z2bOq+OTh7iPTeU8CaOkd6d7b5/UMoMHft/JYxl7bdgwqbip5Huxuf+ALYp2iO3JSQK/n3n3+hj8xmBaJxDT24VwRKXy4klRulo+sAyMKyq3IVt3XERYdeXi59GljuGmK7s7mUBwzK1BeS6+tIH/frykig7btzbONCzj+pqngk7Skqt0G7w1uk3Y9i4U8LoQ5upfkqHm7xxDhCOB2GZ2qjRnoWviX0GtWyMJxw9lDRtbUe0BMPaN/s0GN0eaMoG2qF7eHKd06HVUxc21C9wl2+DNzKA9hsrah0q7ViePa00n0Rf8UEHdywZs3RsM6oXs1FsDs0WEsnP28u2qUDunay2fZYp+5zUtXn9TJhd/PaUVZ0rd9ztqeqLZj1xZO65kqL3cr1AfQVNzsG3CZ/xf5TwR0Sces8GkJEIMYlLQcokngVIWyQoOjOqxkzPIWfqaSsBDorbEi76fKeXkWshw83XMLvjzqqvXVJcyWKr3rQbpHpRgdUt+vh+fBjaBWa3jXM+klZMVtDKYzlEo9VHnrk95K6aOweJ6EtuiI05Ugb/jvPGrxIQeJxXgqsSpNvWg9naEBAQTpXw+Bq8PSU25ekNdlS3h/Ip2IONVuXivlj+c283j6Yf1LlcKfzz1c3AltuWjgc2ekGnwwpFnSRtUzbnQsvob1ii4BmlqN9SofrhemaT39Hcv6TngThmuypI3vvR11RmCWx84qgpi21ETw+KtzplOulyDYsewpfmdg1EBfji+jf/qfI/bgf9+N+/A/GP/kyRwYAGAAA\",\n    \"peers\": [\n        \"org1/peer0\"\n    ]\n}"
+					"raw": "{\n    \"name\": \"{{cc}}\",\n    \"version\": \"2.0\",\n    \"channel\": \"{{ch}}\",\n    \"data\": \"H4sIAJQx3FwAA+1X627bNhT2X+spWAED5M2VnLROsGD50WbNFmBog7rDfgTBQMuUzFkiVZKK6w0B9hp7vT3JziF1c+okbbBgG6ZjwLrw3M/Hc6gwGjw6TYAOD6d43TucTrrXmgZ7z54fHE7gf3oA7w+fTfcHZPr4rg0GpTZUETKgV6s7+e5b/49SGOWUizCVj2gDC3xw8Py2+h9OABtb9d+bHDw7GJDJI/rU0P+8/gWNVzRlBFHgeTwvpDIk8IZ+rDaFkdGH6eRrHx6ZiOWCizQqWI7PSW7wknKzLOdhLPNouSmYytgiZSpK6FzxOIqlYlG8BNUgzCK95ChbzMk9coWSRmowxRQa0UaBZe17I88zwE1eUs3jd0ybk1o3AZ4yNuQ379rzooicCW6ITIhZMtI4gAvvllyTpBSx4VIQuI9pBsaJFNkG/hhZL5nYFkMuLgAmwnBq2CJEPTNpmVJJM1w3khSKFVQx+9qFg2+XVCwyBhZNCWuKvS/BbR166AIJDPny41hG1vtAm3JOMGVhszKDV2fCMJXQGNiKefiW6UIKzSDwIZQkPIdMmUwE/tNj+O1KlM2MXfUhnUMI5bw0EN+W33C7YpvoimYlI0uWZTJaS5UtvCFTihwdE3QuBMGZgYwEvmX0x+Ticr7B5+9RhFiRJ/5o5A15QlDyyTERPENnh4pBRoQL8JVSUgXAUN2hxLVz7q1jo0SXccy0TsqM5HAFzHpbOmZuPQD9owoEL7LsZuKJoDlUm4sruYJac+CgSvErjFKxe8uCUo9XGOvTVmm+Y8YWowEsoAkcTsucCQgmUTK361V4YKpiHCOXbioFek6rlRdicU4VZAG81UFl52TJ4hVCH5S58osyn8MtbKHWHOBcl0nCYw6PtqYZEwEaGpFvyN4tZfXf3a4OtlWj0K+KrtfcxMs2ZNAaU0ikDyGqjX/UGjGhfWUL4gIe1bxlsQBgbjO7dzu5NTSabV54cyYSablbNJ65jtLGkAJ0BFlI8efvfxhooug5FRvS1mGN1XEYFrgHpPJ2JelHsRJyDUyVWGwrYmvPlTaNSb8G96srCB1U04VtXbVBfWMrW4jPHbzvRneby7vAXQHr4tI15Qdi3drahvq/AYKh35a63noaO1w9SlxDtGWG4Os+6TrkduIBxyg4Jt2GCTpdw0SHLyaXn9gY/VPKcUbBOEnBq8Yj13U/6pUGR5zzFFxSVXF2d0uraxtSLZLMkhqLMNt21oob9mB0dTbf48OL32ylWziBXO8/CChwnFEsNmMiGFRjv13u4uYnmyaLX7Zuy9BFxs4ZWkGimaH2ee/yU4dnByMu1S1MLDprD1FRZXrGDFRcmMBneHHzpzPEX/KUFHSTSbr4W2b45+CyM8VPGTZVbMgglsh7YNbt2581pGMAupHqJYSuP9q1J24xeHAW8NgxJlKlqDVtFXatjh6crapiuDlmBe6OJPBfg8Uj8gXE8kal7uac5XgDJW7cgUHT9WBkk24z3HWSKcOhRSKenKkRCeDonkvxulZEBf+V2nld71xIDeCQYsAdBRfVYT48Ewv2IXBPXQujMfGfIvkjckRq7h+oNp8g8dX00hvOMxmvxuRntAxfK+G3DKsfoDM48UGwWsRvmxAOQ5qdtNoCKx5WFRluheYiCc+0hvkVvukswc4F1U1Kas5ZOf8FOkZ40qzUBWzyjB9egc0WflXAt6i58fWBvTen0M64a8bQoaWqzrW6Odi2XcUCA/UE0ICCHZtkJ4ibxgrQsdDF/gFJgSnXuFKBByQtqq+9f/rjtaeeeuqpp5566qmnnnrqqaeeeuqpp5566qmnW+kvEg1gbAAoAAA=\",\n    \"peers\": [\n        \"org1/peer0\"\n    ]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/chaincodes/install",
@@ -392,9 +392,9 @@
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"Query result is 'world'\", function () {",
+							"pm.test(\"Query result is 'Hello world!'\", function () {",
 							"    var jsonData = pm.response.json();",
-							"    pm.expect(jsonData.result).to.eql(\"world\");",
+							"    pm.expect(jsonData.result).to.eql(\"Hello world!\");",
 							"});",
 							""
 						],
@@ -410,7 +410,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=invoke&args=query,hello",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=value&peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
@@ -423,11 +423,15 @@
 					"query": [
 						{
 							"key": "fcn",
-							"value": "invoke"
+							"value": "query"
 						},
 						{
 							"key": "args",
-							"value": "query,hello"
+							"value": "value"
+						},
+						{
+							"key": "peer",
+							"value": "org1/peer0"
 						}
 					]
 				}
@@ -468,7 +472,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"fcn\": \"invoke\",\n    \"args\": [\n        \"invoke\",\n        \"hello\",\n        \"42\"\n    ],\n    \"peers\": [\n        \"org1/peer0\"\n    ]\n}"
+					"raw": "{\n    \"fcn\": \"update\",\n    \"args\": [\n        \"value\",\n        \"42\"\n    ],\n    \"peers\": [\n        \"org1/peer0\"\n    ]\n}"
 				},
 				"url": {
 					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}",
@@ -515,7 +519,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=invoke&args=query,hello&peer=org1/peer0",
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=query&args=value&peer=org1/peer0",
 					"host": [
 						"{{host}}"
 					],
@@ -528,11 +532,69 @@
 					"query": [
 						{
 							"key": "fcn",
-							"value": "invoke"
+							"value": "query"
 						},
 						{
 							"key": "args",
-							"value": "query,hello"
+							"value": "value"
+						},
+						{
+							"key": "peer",
+							"value": "org1/peer0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "QueryChaincode User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6dd7da90-6e43-459f-b3c5-7edd92eef9d6",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Query result containts 'User1'\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.result.includes(\"User1\")).to.eql(true);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/channels/{{ch}}/chaincodes/{{cc}}?fcn=user&args=&peer=org1/peer0",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"channels",
+						"{{ch}}",
+						"chaincodes",
+						"{{cc}}"
+					],
+					"query": [
+						{
+							"key": "fcn",
+							"value": "user"
+						},
+						{
+							"key": "args",
+							"value": ""
 						},
 						{
 							"key": "peer",
@@ -612,19 +674,19 @@
 	],
 	"variable": [
 		{
-			"id": "6414eee2-2033-4eea-9b85-7439d440bedc",
+			"id": "168cc7fa-b3e3-43d1-a1f4-5c569b0997ae",
 			"key": "ch",
 			"value": "mychannel",
 			"type": "string"
 		},
 		{
-			"id": "e301185e-7954-4c42-9adf-a450e69e91e3",
+			"id": "08cfaf90-a997-4daf-a2b8-7d0782559d52",
 			"key": "cc",
 			"value": "mycc",
 			"type": "string"
 		},
 		{
-			"id": "9bb6fb18-3a67-4630-b470-18d67398e257",
+			"id": "bb715c4c-bfb5-4035-903f-bc62a863e582",
 			"key": "host",
 			"value": "localhost:8080",
 			"type": "string"
