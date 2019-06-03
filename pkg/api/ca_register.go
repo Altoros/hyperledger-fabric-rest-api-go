@@ -14,7 +14,7 @@ import (
 	"os"
 )
 
-func CaRegister(apiConfig *sdk.Config,  registerRequest *ca.ApiRegisterRequest) (string, error) {
+func CaRegister(apiConfig *sdk.Config, registerRequest *ca.ApiRegisterRequest) (string, error) {
 
 	jsonRegisterRequest := fmt.Sprintf(`{"id":"%s","type":"client","affiliation":""}`, registerRequest.Login)
 
@@ -80,7 +80,7 @@ func CaRegister(apiConfig *sdk.Config,  registerRequest *ca.ApiRegisterRequest) 
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", token)
 
-	client,err := ca.HttpClient(apiConfig)
+	client, err := ca.HttpClient(apiConfig)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to create HTTP client")
 	}

@@ -95,26 +95,7 @@ func PrivateKeyToPEM(privateKey *ecdsa.PrivateKey) ([]byte, error) {
 	), nil
 }
 
-func oidFromNamedCurve(curve elliptic.Curve) (asn1.ObjectIdentifier, bool) {
-	switch curve {
-	case elliptic.P224():
-		return oidNamedCurveP224, true
-	case elliptic.P256():
-		return oidNamedCurveP256, true
-	case elliptic.P384():
-		return oidNamedCurveP384, true
-	case elliptic.P521():
-		return oidNamedCurveP521, true
-	}
-	return nil, false
-}
 
-var (
-	oidNamedCurveP224 = asn1.ObjectIdentifier{1, 3, 132, 0, 33}
-	oidNamedCurveP256 = asn1.ObjectIdentifier{1, 2, 840, 10045, 3, 1, 7}
-	oidNamedCurveP384 = asn1.ObjectIdentifier{1, 3, 132, 0, 34}
-	oidNamedCurveP521 = asn1.ObjectIdentifier{1, 3, 132, 0, 35}
-)
 
 // struct to hold info required for PKCS#8
 type pkcs8Info struct {
@@ -130,4 +111,3 @@ type ecPrivateKey struct {
 	PublicKey     asn1.BitString        `asn1:"optional,explicit,tag:1"`
 }
 
-var oidPublicKeyECDSA = asn1.ObjectIdentifier{1, 2, 840, 10045, 2, 1}

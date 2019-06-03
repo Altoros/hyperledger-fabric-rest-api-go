@@ -60,10 +60,10 @@ type CaRegisterResponse struct {
 }
 
 type CaRegisterResponseWithResult struct {
-	Result CaRegisterResponseResult `json:"result"`
+	Result   CaRegisterResponseResult  `json:"result"`
 	Errors   []CaRegisterResponseError `json:"errors"`
 	Messages []string                  `json:"messages"`
-	Success bool `json:"success"`
+	Success  bool                      `json:"success"`
 }
 
 type CaRegisterResponseWithErrors struct {
@@ -77,4 +77,16 @@ func (caRegisterResponseWithErrors *CaRegisterResponseWithErrors) ErrorsString()
 		messages = append(messages, fmt.Sprintf("%s (code %s)", caRegisterResponseError.Message, strconv.Itoa(caRegisterResponseError.Code)))
 	}
 	return strings.Join(messages, ", ")
+}
+
+type CaTbsCsrRequest struct {
+	X     string `json:"x" validate:"required"`
+	Y     string `json:"y" validate:"required"`
+	Login string `json:"login" validate:"required"`
+	Email string `json:"email"`
+}
+
+type CaTbsCsrResponse struct {
+	TbsCsrBytes string `json:"tbs_csr_bytes"`
+	TbsCsrHash  string `json:"tbs_csr_hash"`
 }

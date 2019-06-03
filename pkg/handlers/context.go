@@ -3,16 +3,20 @@ package handlers
 import (
 	"fabric-rest-api-go/pkg/sdk"
 	"fmt"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
+	"gopkg.in/go-playground/validator.v9"
 	"regexp"
+	"strings"
 )
 
 type ApiContext struct {
 	echo.Context
 
-	fsc *sdk.FabricSdkClient
+	fsc        *sdk.FabricSdkClient
+	Translator ut.Translator
 }
 
 func (c *ApiContext) Fsc() *sdk.FabricSdkClient {
@@ -21,6 +25,20 @@ func (c *ApiContext) Fsc() *sdk.FabricSdkClient {
 
 func (c *ApiContext) SetFsc(fsc *sdk.FabricSdkClient) {
 	c.fsc = fsc
+}
+
+// converts go-playground/validator ValidationErrors to one simple combined english message error
+func (c *ApiContext) ValidationErrors(err error) error {
+	errs := err.(validator.ValidationErrors)
+
+	errorsTranslations := errs.Translate(c.Translator)
+
+	var combinedErrors []string
+	for _, errorTranslation := range errorsTranslations {
+		combinedErrors = append(combinedErrors, fmt.Sprintf("%s.", errorTranslation))
+	}
+
+	return errors.New(strings.Join(combinedErrors, " "))
 }
 
 type PeerParsed struct {

@@ -54,3 +54,38 @@ func CsrPEM(privateKey *ecdsa.PrivateKey, enrollRequest *ApiEnrollRequest) (stri
 
 	return buf.String(), nil
 }
+
+func TbsCsrBytes(caTbsCsrRequest *CaTbsCsrRequest, publicKey *ecdsa.PublicKey) ([]byte, error){
+	// TODO: Fill CSR details from enrollRequest
+	subj := pkix.Name{
+		CommonName:         caTbsCsrRequest.Login,
+		Country:            []string{"US"},
+		Province:           []string{"North Carolina"},
+		Organization:       []string{"Hyperledger"},
+		OrganizationalUnit: []string{"Fabric"},
+	}
+	rawSubj := subj.ToRDNSequence()
+	var emailAddresses []string
+	if caTbsCsrRequest.Email != "" {
+		rawSubj = append(rawSubj, []pkix.AttributeTypeAndValue{
+			{Type: oidEmailAddress, Value: caTbsCsrRequest.Email},
+		})
+
+		emailAddresses = []string{caTbsCsrRequest.Email}
+	}
+
+	asn1Subj, _ := asn1.Marshal(rawSubj)
+	template := x509.CertificateRequest{
+		RawSubject:         asn1Subj,
+		EmailAddresses:     emailAddresses,
+		SignatureAlgorithm: x509.ECDSAWithSHA256,
+		DNSNames:           []string{},
+	}
+
+	tbsCsrBytes, err := CreateTbsCsr(&template, publicKey)
+	if err != nil {
+		return nil, errors.Wrap(err, "x509 CSR creating error")
+	}
+
+	return tbsCsrBytes, nil
+}

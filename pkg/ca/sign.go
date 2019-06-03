@@ -75,3 +75,19 @@ type ECDSASignature struct {
 func MarshalECDSASignature(r, s *big.Int) ([]byte, error) {
 	return asn1.Marshal(ECDSASignature{r, s})
 }
+
+func ToLowS_P256(s *big.Int) *big.Int {
+	halfOrder := new(big.Int).Rsh(elliptic.P256().Params().N, 1)
+
+	isLowS := s.Cmp(halfOrder) != 1
+
+	if !isLowS {
+		N := elliptic.P256().Params().N
+
+		// Set s to N - s that will be then in the lower part of signature space
+		// less or equal to half order
+		s.Sub(N, s)
+	}
+
+	return s
+}

@@ -4,9 +4,24 @@ import (
 	"fabric-rest-api-go/pkg/handlers"
 	"fabric-rest-api-go/pkg/sdk"
 	"flag"
+	"github.com/go-playground/locales/en"
+	ut "github.com/go-playground/universal-translator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/pkg/errors"
+	"gopkg.in/go-playground/validator.v9"
+	entranslations "gopkg.in/go-playground/validator.v9/translations/en"
 )
+
+type (
+	CustomValidator struct {
+		validator *validator.Validate
+	}
+)
+
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
 
 func main() {
 	var apiConfigPath string
@@ -32,9 +47,23 @@ func main() {
 
 	e := echo.New()
 
+	enLocale := en.New()
+	uni := ut.New(enLocale, enLocale)
+	translator, ok := uni.GetTranslator("en")
+	if !ok {
+		panic(errors.New("unable to get translator"))
+	}
+
+	validatorInstance := validator.New()
+	err = entranslations.RegisterDefaultTranslations(validatorInstance, translator)
+	if err != nil {
+		panic(err)
+	}
+	e.Validator = &CustomValidator{validator: validatorInstance}
+
 	e.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &handlers.ApiContext{Context: c}
+			cc := &handlers.ApiContext{Context: c, Translator: translator}
 			cc.SetFsc(&fsc)
 			return h(cc)
 		}
@@ -71,6 +100,16 @@ func main() {
 	// CA and certificates
 	e.POST("/ca/enroll", handlers.PostCaEnrollHandler)
 	e.POST("/ca/register", handlers.PostCaRegisterHandler)
+
+	// CA interactions with remote private key
+	e.POST("/ca/tbs-csr", handlers.PostCaTbsCsrHandler)
+	e.POST("/ca/enroll-csr", handlers.PostCaEnrollCsrHandler)
+
+	// Transactions management with remote private key
+	e.POST("/tx/proposal", handlers.PostTxProposalHandler)
+	e.POST("/tx/query", handlers.PostTxQueryHandler)
+	e.POST("/tx/broadcast-payload", handlers.PostTxBroadcastPayloadHandler)
+	e.POST("/tx/broadcast", handlers.PostTxBroadcastHandler)
 
 	e.GET("/notifications", handlers.NotificationsHandler)
 
