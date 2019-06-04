@@ -110,7 +110,11 @@ func Invoke(t *testing.T, channelId, chaincodeId, fcn string, args []string) {
 	}
 	defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
 	t.Logf("response %s: %s", resp.Status, string(body))
 }
 
@@ -138,7 +142,11 @@ func Query(t *testing.T, channelId, chaincodeId, fcn string, args []string) stri
 	}
 	defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
 	t.Logf("API Response %s: %s", resp.Status, string(body))
 
 	jsonParsed, _ := gabs.ParseJSON(body)

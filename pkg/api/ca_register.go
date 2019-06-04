@@ -91,7 +91,10 @@ func CaRegister(apiConfig *sdk.Config, registerRequest *ca.ApiRegisterRequest) (
 	}
 	defer resp.Body.Close()
 
-	body, _ := ioutil.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to read response")
+	}
 
 	caRegisterResponse := ca.CaRegisterResponse{}
 	err = json.Unmarshal(body, &caRegisterResponse)
