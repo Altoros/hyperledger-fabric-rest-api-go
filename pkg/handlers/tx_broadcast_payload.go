@@ -15,9 +15,10 @@ import (
 )
 
 type TxBroadcastPayloadRequest struct {
-	ProposalBytes string `json:"proposal_bytes" validate:"required"`
-	R             string `json:"r" validate:"required"`
-	S             string `json:"s" validate:"required"`
+	ProposalBytes string   `json:"proposal_bytes" validate:"required"`
+	R             string   `json:"r" validate:"required"`
+	S             string   `json:"s" validate:"required"`
+	Peers         []string `json:"peers" validate:"required"`
 }
 
 type TxBroadcastPayloadResponse struct {
@@ -37,8 +38,10 @@ func PostTxBroadcastPayloadHandler(ec echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, c.ValidationErrors(err).Error())
 	}
 
-	// TODO change to one peer (one for tx/query, multiple for tx/invoke)
-	targets := []string{"localhost:7051"}
+	targets, err := c.ParseApiPeers(txBroadcastPayloadRequest.Peers)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
 
 	proposalBytes, err := utils.B64Decode(txBroadcastPayloadRequest.ProposalBytes)
 	if err != nil {
@@ -50,6 +53,7 @@ func PostTxBroadcastPayloadHandler(ec echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
+	// TODO wrap every signature marshaling in project to one method
 	r := new(big.Int)
 	r.SetString(txBroadcastPayloadRequest.R, 16)
 	s := new(big.Int)

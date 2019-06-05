@@ -3,12 +3,12 @@ package tx
 import (
 	"context"
 	"crypto/sha256"
+	"fabric-rest-api-go/pkg/sdk"
 	"github.com/hyperledger/fabric/protos/common"
 	"github.com/hyperledger/fabric/protos/orderer"
 	"github.com/hyperledger/fabric/protos/peer"
 	"github.com/hyperledger/fabric/protos/utils"
 	"github.com/pkg/errors"
-	"google.golang.org/grpc"
 	"io"
 	"strings"
 )
@@ -123,9 +123,9 @@ func CreateBroadcastEnvelope(payload *common.Payload, signature []byte) (*common
 }
 
 // SendBroadcastToOrderer Send the created transaction to Orderer.
-func SendBroadcastToOrderer(envelope *common.Envelope, target string) error {
+func SendBroadcastToOrderer(envelope *common.Envelope, apiOrderer sdk.ApiOrderer) error {
 	ctx := context.TODO()
-	conn, err := grpc.DialContext(ctx, target, grpc.WithBlock(), grpc.WithInsecure())
+	conn, err := apiOrderer.GrpcConn(ctx)
 	if err != nil {
 		return err
 	}

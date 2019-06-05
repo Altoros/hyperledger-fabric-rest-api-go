@@ -173,7 +173,7 @@ func (fsc *FabricSdkClient) Admin() *resmgmt.Client {
 	return fsc.admin
 }
 
-func (fsc *FabricSdkClient) Sdk() *fabsdk.FabricSDK{
+func (fsc *FabricSdkClient) Sdk() *fabsdk.FabricSDK {
 	return fsc.sdk
 }
 

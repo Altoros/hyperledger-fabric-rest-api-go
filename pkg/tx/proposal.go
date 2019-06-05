@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"fabric-rest-api-go/pkg/sdk"
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric/common/crypto"
 	"github.com/hyperledger/fabric/protos/common"
@@ -11,7 +12,6 @@ import (
 	"github.com/hyperledger/fabric/protos/peer"
 	"github.com/hyperledger/fabric/protos/utils"
 	"github.com/pkg/errors"
-	"google.golang.org/grpc"
 )
 
 func CreateProposal(ChannelID, ChaincodeID string, argsArray [][]byte, mspid string, userCert []byte) (*peer.Proposal, error) {
@@ -80,14 +80,14 @@ func ProposalHash(proposal *peer.Proposal) ([]byte, error) {
 	return proposalSha256, nil
 }
 
-func SendProposalToPeersEndorsment(signedProposal *peer.SignedProposal, targets []string) ([]*peer.ProposalResponse, error) {
+func SendProposalToPeersEndorsment(signedProposal *peer.SignedProposal, targets []sdk.ApiPeer) ([]*peer.ProposalResponse, error) {
 	var proposalResponses []*peer.ProposalResponse
 
 	for _, target := range targets {
 		ctx := context.TODO()
-		conn, err := grpc.DialContext(ctx, target, grpc.WithBlock(), grpc.WithInsecure())
+		conn, err := target.GrpcConn(ctx)
 		if err != nil {
-			return nil, errors.Wrapf(err, "grpc connection error to %s", target)
+			return nil, errors.Wrapf(err, "grpc connection error to peer, %v", target)
 		}
 
 		endorserClient := peer.NewEndorserClient(conn)

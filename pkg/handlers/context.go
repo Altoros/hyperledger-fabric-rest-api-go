@@ -3,7 +3,7 @@ package handlers
 import (
 	"fabric-rest-api-go/pkg/sdk"
 	"fmt"
-	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/universal-translator"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
@@ -45,6 +45,20 @@ type PeerParsed struct {
 	Peer, Org string
 }
 
+func (c *ApiContext) ParseApiPeers(apiPeersStrings []string) ([]sdk.ApiPeer, error) {
+	var peers []sdk.ApiPeer
+	for _, peerString := range apiPeersStrings {
+		peer, ok := c.Fsc().ApiConfig.Peers[peerString]
+		if ok {
+			peers = append(peers, peer)
+		} else {
+			return nil, errors.Errorf(`failed to parse peer string "%s"`, peerString)
+		}
+	}
+
+	return peers, nil
+}
+
 func (c *ApiContext) ParsePeers(peersStrings []string) ([]fab.Peer, error) {
 	var peers []fab.Peer
 	for _, peerString := range peersStrings {
@@ -56,6 +70,8 @@ func (c *ApiContext) ParsePeers(peersStrings []string) ([]fab.Peer, error) {
 			}
 
 			peers = append(peers, peer)
+		} else {
+			return nil, errors.Errorf(`failed to parse peer string "%s"`, peerString)
 		}
 	}
 

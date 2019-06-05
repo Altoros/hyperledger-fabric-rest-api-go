@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/ca"
+	"fabric-rest-api-go/pkg/sdk"
 	"fabric-rest-api-go/pkg/tx"
 	"fabric-rest-api-go/pkg/utils"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -14,6 +15,7 @@ type TxQueryRequest struct {
 	ProposalBytes string `json:"proposal_bytes" validate:"required"`
 	R             string `json:"r" validate:"required"`
 	S             string `json:"s" validate:"required"`
+	Peer          string `json:"peer" validate:"required"`
 }
 
 type TxQueryResponse struct {
@@ -32,15 +34,19 @@ func PostTxQueryHandler(ec echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, c.ValidationErrors(err).Error())
 	}
 
-	// TODO change to one peer (one for tx/query, multiple for tx/invoke)
-	targets := []string{"localhost:7051"}
+	peers, err := c.ParseApiPeers([]string{txQueryRequest.Peer})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	targets := []sdk.ApiPeer{peers[0]}
 
-	// create proposal from b64
+	// peer.proposal bytes from b64
 	proposalBytes, err := utils.B64Decode(txQueryRequest.ProposalBytes)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	// TODO wrap every signature marshaling in project to one method
 	r := new(big.Int)
 	r.SetString(txQueryRequest.R, 16)
 	s := new(big.Int)
@@ -60,4 +66,3 @@ func PostTxQueryHandler(ec echo.Context) error {
 
 	return ec.JSON(http.StatusOK, TxQueryResponse{Result: string(proposalResponses[0].Response.Payload)})
 }
-

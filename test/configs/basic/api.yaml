@@ -4,4 +4,6 @@ org:
 user:
   name: User1
 ca:
-  host: localhost:7054
+  url: localhost:7054
+orderer:
+  url: localhost:7050

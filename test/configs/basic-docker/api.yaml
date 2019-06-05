@@ -4,4 +4,4 @@ org:
 user:
   name: User1
 ca:
-  host: ca.example.com:7054
+  url: ca.example.com:7054

@@ -17,8 +17,7 @@ type TxBroadcastRequest struct {
 }
 
 type TxBroadcastResponse struct {
-	PayloadBytes string `json:"payload_bytes"`
-	PayloadHash  string `json:"payload_hash"`
+	Result string `json:"result"`
 }
 
 func PostTxBroadcastHandler(ec echo.Context) error {
@@ -39,6 +38,7 @@ func PostTxBroadcastHandler(ec echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
+	// TODO wrap every signature marshaling in project to one method
 	r := new(big.Int)
 	r.SetString(txBroadcastRequest.R, 16)
 	s := new(big.Int)
@@ -59,14 +59,18 @@ func PostTxBroadcastHandler(ec echo.Context) error {
 		return err
 	}
 
-	// TODO replace with ordered url
-	target := "localhost:7050"
+	target := c.Fsc().ApiConfig.Orderer
 	// send to orderer
 	err = tx.SendBroadcastToOrderer(envelope, target)
 	if err != nil {
 		return err
 	}
 
-	// TODO replace with TxId
-	return ec.JSONBlob(http.StatusOK, []byte(`{"result": "ok"}`))
+	channelHeader, err := protoutils.UnmarshalChannelHeader(payload.Header.ChannelHeader)
+	if err != nil {
+		return err
+	}
+	txId:= channelHeader.GetTxId()
+
+	return ec.JSON(http.StatusOK, TxBroadcastResponse{Result: txId})
 }

@@ -1,5 +1,25 @@
 org:
-  admin: "Admin"
-  name: "Org1"
+  admin: Admin
+  name: Org1
 user:
-  name: "User1"
+  name: User1
+ca:
+  url: localhost:7054
+  tls: true
+  tlsCertFile: ./_tmp/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem
+orderer:
+  url: localhost:7050
+  tls: true
+  tlsCertFile: ./_tmp/fabric-samples/first-network/crypto-config/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+  tlsServerName: orderer.example.com
+peers:
+  org1/peer0:
+    url: localhost:7051
+    tls: true
+    tlsCertFile: ./_tmp/fabric-samples/first-network/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+    tlsServerName: peer0.org1.example.com
+  org2/peer0:
+    url: localhost:9051
+    tls: true
+    tlsCertFile: ./_tmp/fabric-samples/first-network/crypto-config/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+    tlsServerName: peer0.org2.example.com

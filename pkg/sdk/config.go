@@ -16,12 +16,14 @@ type Config struct {
 		Name string
 	}
 	Ca struct {
-		Host        string
+		Url         string
 		Tls         bool
 		TlsCertFile string `yaml:"tlsCertFile"`
 		Address     string
 		Protocol    string
 	}
+	Orderer ApiOrderer
+	Peers map[string]ApiPeer
 }
 
 func LoadConfiguration(file string) (*Config, error) {
@@ -40,7 +42,7 @@ func LoadConfiguration(file string) (*Config, error) {
 		config.Ca.Protocol = "https"
 	}
 
-	config.Ca.Address = fmt.Sprintf("%s://%s", config.Ca.Protocol, config.Ca.Host)
+	config.Ca.Address = fmt.Sprintf("%s://%s", config.Ca.Protocol, config.Ca.Url)
 
 	return config, nil
 }

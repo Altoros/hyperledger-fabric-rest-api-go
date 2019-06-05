@@ -4,6 +4,6 @@ org:
 user:
   name: User1
 ca:
-  host: ca-tls.example.com:7054
+  url: ca-tls.example.com:7054
   tls: true
   tlsCertFile: /app/ca-tls/ca.org1.example.com-cert.pem
