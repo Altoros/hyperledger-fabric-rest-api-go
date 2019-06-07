@@ -5,7 +5,7 @@ import (
 	"fabric-rest-api-go/pkg/sdk"
 	"flag"
 	"github.com/go-playground/locales/en"
-	ut "github.com/go-playground/universal-translator"
+	"github.com/go-playground/universal-translator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/pkg/errors"
@@ -108,7 +108,7 @@ func main() {
 	// Transactions management with remote private key
 	e.POST("/tx/proposal", handlers.PostTxProposalHandler)
 	e.POST("/tx/query", handlers.PostTxQueryHandler)
-	e.POST("/tx/broadcast-payload", handlers.PostTxBroadcastPayloadHandler)
+	e.POST("/tx/prepare-broadcast", handlers.PostTxPrepareBroadcastHandler)
 	e.POST("/tx/broadcast", handlers.PostTxBroadcastHandler)
 
 	e.GET("/notifications", handlers.NotificationsHandler)

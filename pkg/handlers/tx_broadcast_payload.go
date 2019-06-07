@@ -14,36 +14,36 @@ import (
 	"net/http"
 )
 
-type TxBroadcastPayloadRequest struct {
+type TxPrepareBroadcastRequest struct {
 	ProposalBytes string   `json:"proposal_bytes" validate:"required"`
 	R             string   `json:"r" validate:"required"`
 	S             string   `json:"s" validate:"required"`
 	Peers         []string `json:"peers" validate:"required"`
 }
 
-type TxBroadcastPayloadResponse struct {
+type TxPrepareBroadcastResponse struct {
 	PayloadBytes string `json:"payload_bytes"`
 	PayloadHash  string `json:"payload_hash"`
 }
 
-func PostTxBroadcastPayloadHandler(ec echo.Context) error {
+func PostTxPrepareBroadcastHandler(ec echo.Context) error {
 	c := ec.(*ApiContext)
 
-	txBroadcastPayloadRequest := new(TxBroadcastPayloadRequest)
-	if err := c.Bind(txBroadcastPayloadRequest); err != nil {
+	txPrepareBroadcastRequest := new(TxPrepareBroadcastRequest)
+	if err := c.Bind(txPrepareBroadcastRequest); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := c.Validate(txBroadcastPayloadRequest); err != nil {
+	if err := c.Validate(txPrepareBroadcastRequest); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, c.ValidationErrors(err).Error())
 	}
 
-	targets, err := c.ParseApiPeers(txBroadcastPayloadRequest.Peers)
+	targets, err := c.ParseApiPeers(txPrepareBroadcastRequest.Peers)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	proposalBytes, err := utils.B64Decode(txBroadcastPayloadRequest.ProposalBytes)
+	proposalBytes, err := utils.B64Decode(txPrepareBroadcastRequest.ProposalBytes)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -55,9 +55,9 @@ func PostTxBroadcastPayloadHandler(ec echo.Context) error {
 
 	// TODO wrap every signature marshaling in project to one method
 	r := new(big.Int)
-	r.SetString(txBroadcastPayloadRequest.R, 16)
+	r.SetString(txPrepareBroadcastRequest.R, 16)
 	s := new(big.Int)
-	s.SetString(txBroadcastPayloadRequest.S, 16)
+	s.SetString(txPrepareBroadcastRequest.S, 16)
 
 	proposalSignature, err := ca.MarshalECDSASignature(r, ca.ToLowS_P256(s))
 	if err != nil {
@@ -86,7 +86,7 @@ func PostTxBroadcastPayloadHandler(ec echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	return ec.JSON(http.StatusOK, TxBroadcastPayloadResponse{
+	return ec.JSON(http.StatusOK, TxPrepareBroadcastResponse{
 		PayloadBytes: utils.B64Encode(payloadBytes),
 		PayloadHash:  fmt.Sprintf("%x", payloadHash),
 	})

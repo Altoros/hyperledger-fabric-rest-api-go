@@ -393,7 +393,7 @@ export default {
         ...this.proposalSignature
       };
 
-      fetch("http://localhost:8080/tx/broadcast-payload", {
+      fetch("http://localhost:8080/tx/prepare-broadcast", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
