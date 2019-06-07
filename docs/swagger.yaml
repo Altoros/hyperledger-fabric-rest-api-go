@@ -1,0 +1,341 @@
+swagger: '2.0'
+info:
+  description: Hyperledger Fabric REST API @Altoros
+  version: 1.0.0
+  title: Hyperledger Fabric REST API
+
+tags:
+  - name: light
+    description: Operations with CA, peers and orderer with light-cryptography
+
+paths:
+  /ca/tbs-csr:
+    post:
+      tags:
+        - light
+      summary: create tbs CSR
+      description: Creates TBS CSR from public key and user data
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CaTbsCsrRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CaTbsCsrRequest'
+      responses:
+        200:
+          description: response with base64 encoded TBS CSR and its hash
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CaTbsCsrResponse'
+        400:
+          description: bad input parameter
+
+  /ca/enroll-csr:
+    post:
+      tags:
+        - light
+      summary: enroll with signed CSR
+      description: |
+        Enroll with signed CSR.
+        User should sign provided TBS CSR hash with his private key and send signature to API with same TBS CSR bytes.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CaEnrollCsrRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CaEnrollCsrRequest'
+      responses:
+        200:
+          description: B64 encoded user X.509 certificate
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CaEnrollCsrResponse'
+        400:
+          description: bad input parameter
+
+  /tx/proposal:
+    post:
+      tags:
+        - light
+      summary: Create transaction proposal
+      description: TODO
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: ProposalRequest
+          required: true
+          schema:
+            $ref: '#/definitions/ProposalRequest'
+      responses:
+        200:
+          description: TODO
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProposalResponse'
+        400:
+          description: bad input parameter
+
+  /tx/query:
+    post:
+      tags:
+        - light
+      summary: Query peer with signed tx proposal
+      description: TODO
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: TxQueryRequest
+          required: true
+          schema:
+            $ref: '#/definitions/TxQueryRequest'
+      responses:
+        200:
+          description: TODO
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TxQueryResponse'
+        400:
+          description: bad input parameter
+
+  /tx/prepare-broadcast:
+    post:
+      tags:
+        - light
+      summary: Collect endorsments, prepare envelope to orderer
+      description: TODO
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: TxPrepareBroadcastRequest
+          required: true
+          schema:
+            $ref: '#/definitions/TxPrepareBroadcastRequest'
+      responses:
+        200:
+          description: TODO
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TxPrepareBroadcastResponse'
+        400:
+          description: bad input parameter
+
+  /tx/broadcast:
+    post:
+      tags:
+        - light
+      summary: Broadcast tx through orderer
+      description: TODO
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: TxBroadcastRequest
+          required: true
+          schema:
+            $ref: '#/definitions/TxBroadcastRequest'
+      responses:
+        200:
+          description: TODO
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TxBroadcastResponse'
+        400:
+          description: bad input parameter
+
+definitions:
+  CaTbsCsrRequest:
+    type: object
+    required:
+      - x
+      - y
+      - login
+    properties:
+      x:
+        type: string
+        example: 6951a441c8c67de5dac4c4dc20eada901fcecae8af7f6eaf088edd8c5268d7b2
+      y:
+        type: string
+        example: 17d9e47a70826bf521b160fa6a106fa3a4312118c44cec2d9a435511fda2a918
+      login:
+        type: string
+        example: UserLogin
+      email:
+        type: string
+        example: user@altoros.com
+  CaTbsCsrResponse:
+    type: object
+    properties:
+      tbs_csr_bytes:
+        type: string
+        description: bytes is B64 encoded and must be passed to enroll-csr method as is
+        example: MIHAAgEAMF4xCzAJBgNVBAYTAlVTMRcwFQYDVQQIEw5Ob3J0aCBDYXJvbGluYTEUMBIGA1UEChMLSHlwZXJsZWRnZXIxDzANBgNVBAsTBkZhYnJpYzEPMA0GA1UEAxMGVXNlckNhMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAENuJ7eSHRrnrcYMFR4OTkz26Ikc
+      tbs_csr_hash:
+        type: string
+        example: 8ddb30fe6c353743214f1fb257c87d847b0ff7c76897a3241e432015c927f382
+
+  CaEnrollCsrRequest:
+    type: object
+    required:
+      - login
+      - password
+      - tbs_csr_bytes
+      - r
+      - s
+    properties:
+      login:
+        type: string
+        example: userLogin
+      password:
+        type: string
+        example: bCcgDuAsvmqZ
+      tbs_csr_bytes:
+        type: string
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 583d7f85e891424999b336b05661b09e63fbd812f05d72ee7c3c278d4573d4f7
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: f8d4e3162caace582cdd9b9a9965d6b8a3e3b0771a33d301c2f104e492493791
+  CaEnrollCsrResponse:
+    type: object
+    properties:
+      user_cert:
+        type: string
+        example: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNuRENDQWtLZ0F3SUJBZ0lVS1FjRzJEdmtSNEtWTWVTSnJKOUxsQ2h6MWJjd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qQTNNVFUwTWpBd1doY05NakF3TmpBMk1UVTAKTnpBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZ…WRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGRDVPCnZQTlVhRVlhVTZyK2JWZlhBOUVCMFNrTk1Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05JQURCRkFpRUFnV3Rzd2EweDJxS1Nvb1F6enNaWjExTEkKSFFSQjdHNmt3WEVManNNcElBb0NJRVlGeHF4QlVib0lnanVIUWdDRXFkdDI4bmRZT1pZYXVrcFg5TXpOY3IzTAotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+
+  ProposalRequest:
+    type: object
+    required:
+      - chaincode_id
+      - channel_id
+      - fcn
+      - msp_id
+      - user_cert
+    properties:
+      chaincode_id:
+        type: string
+      channel_id:
+        type: string
+      fcn:
+        type: string
+      args:
+        type: array
+        items:
+          type: string
+      msp_id:
+        type: string
+      user_cert:
+        type: string
+  ProposalResponse:
+    type: object
+    properties:
+      proposal_bytes:
+        type: string
+      proposal_hash:
+        type: string
+
+
+  TxQueryRequest:
+    type: object
+    required:
+      - proposal_bytes
+      - r
+      - s
+      - peer
+    properties:
+      proposal_bytes:
+        type: string
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 583d7f85e891424999b336b05661b09e63fbd812f05d72ee7c3c278d4573d4f7
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: f8d4e3162caace582cdd9b9a9965d6b8a3e3b0771a33d301c2f104e492493791
+      peer:
+        type: string
+  TxQueryResponse:
+    type: object
+    properties:
+      result:
+        type: string
+
+  TxPrepareBroadcastRequest:
+    type: object
+    required:
+      - proposal_bytes
+      - r
+      - s
+      - peers
+    properties:
+      proposal_bytes:
+        type: string
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 583d7f85e891424999b336b05661b09e63fbd812f05d72ee7c3c278d4573d4f7
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: f8d4e3162caace582cdd9b9a9965d6b8a3e3b0771a33d301c2f104e492493791
+      peers:
+        type: array
+        items:
+          type: string
+  TxPrepareBroadcastResponse:
+    type: object
+    properties:
+      payload_bytes:
+        type: string
+      payload_hash:
+        type: string
+
+  TxBroadcastRequest:
+    required:
+      - payload_bytes
+      - r
+      - s
+    properties:
+      payload_bytes:
+        type: string
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 583d7f85e891424999b336b05661b09e63fbd812f05d72ee7c3c278d4573d4f7
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: f8d4e3162caace582cdd9b9a9965d6b8a3e3b0771a33d301c2f104e492493791
+  TxBroadcastResponse:
+    type: object
+    properties:
+      result:
+        type: string
