@@ -7,3 +7,6 @@ ca:
   url: localhost:7054
 orderer:
   url: localhost:7050
+peers:
+  org1/peer0:
+    url: localhost:7051

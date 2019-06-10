@@ -24,16 +24,16 @@ func (ap *ApiOrderer) GrpcConn(ctx context.Context) (conn *grpc.ClientConn, err 
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	peerCertPEM, err := ioutil.ReadFile(ap.TlsCertFile)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	certPool := x509.NewCertPool()
-	certPool.AppendCertsFromPEM(peerCertPEM)
-	tlsConfig := &tls.Config{RootCAs: certPool, ServerName: ap.TlsServerName}
-
 	if ap.Tls {
+		peerCertPEM, err := ioutil.ReadFile(ap.TlsCertFile)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		certPool := x509.NewCertPool()
+		certPool.AppendCertsFromPEM(peerCertPEM)
+		tlsConfig := &tls.Config{RootCAs: certPool, ServerName: ap.TlsServerName}
+
 		conn, err = grpc.DialContext(ctx, ap.Url, grpc.WithBlock(), grpc.WithTransportCredentials(credentials.NewTLS(tlsConfig)))
 	} else {
 		conn, err = grpc.DialContext(ctx, ap.Url, grpc.WithBlock(), grpc.WithInsecure())
