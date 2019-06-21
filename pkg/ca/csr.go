@@ -59,7 +59,7 @@ func TbsCsrBytes(caTbsCsrRequest *CaTbsCsrRequest, publicKey *ecdsa.PublicKey) (
 	// TODO: Fill CSR details from enrollRequest
 	subj := pkix.Name{
 		CommonName:         caTbsCsrRequest.Login,
-		Country:            []string{"Belarus"},
+		Country:            []string{"BY"},
 		Province:           []string{"Minsk"},
 		Organization:       []string{"Altoros"},
 		OrganizationalUnit: []string{"Altoros"},
