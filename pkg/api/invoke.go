@@ -1,12 +1,13 @@
 package api
 
 import (
-	"fmt"
+	"fabric-rest-api-go/pkg/sdk"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
+	"github.com/pkg/errors"
 )
 
-func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args []string, peers []fab.Peer) (string, error) {
+func Invoke(fsc sdk.ChannelClientProvider, channelId, chaincodeId, fcn string, args []string, peers []fab.Peer) (string, error) {
 
 	// Prepare arguments
 	var requestArgs [][]byte
@@ -14,9 +15,7 @@ func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args 
 		requestArgs = append(requestArgs, []byte(arg))
 	}
 
-	// Add data that will be visible in the proposal, like a description of the invoke request
 	transientDataMap := make(map[string][]byte)
-	transientDataMap["result"] = []byte("Transient data in hello invoke")
 
 	// TODO txStatus event support
 	/*_, txStatusEventNotifier, err := eventClient.RegisterTxStatusEvent()
@@ -43,7 +42,7 @@ func Invoke(fsc ChannelClientProvider, channelId, chaincodeId, fcn string, args 
 		channel.WithTargets(peers...),
 	)
 	if err != nil {
-		return "", fmt.Errorf("failed to move funds: %v", err)
+		return "", errors.Wrap(err, "failed to invoke chaincode")
 	}
 
 	return string(response.TransactionID), nil

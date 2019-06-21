@@ -1,7 +1,8 @@
 .PHONY: build run unit_test test docker_build clear
 .PHONY: basic_up basic_down basic_clear basic_restart basic_docker_up basic_docker_down basic_newman_test basic_e2e_test
 .PHONY: byfn_up byfn_test byfn_clear byfn_docker_up byfn_docker_down byfn_newman_test byfn byfn_e2e_test
-.PHONY: ci_up ci_clear ca_docker_up ca_docker_down ca_test ca_e2e_test
+.PHONY: ca_up ca_clear ca_test ca_e2e_test
+.PHONY: demo_light_up demo_light_down
 
 help:
 	@echo "Fabric REST API GoLang"
@@ -33,12 +34,13 @@ help:
 	@echo "byfn: start, run API shell tests and clear BYFN network"
 	@echo "byfn_e2e_test: run end-2-end test with Docker container and API Newman tests on BYFN network"
 	@echo ""
-	@echo "ca_up: start CA network"
+	@echo "ca_up: start CA testing network"
 	@echo "ca_test: API Newman tests on CA network"
 	@echo "ca_clear: stop and clear CA network"
-	@echo "ca_docker_up: start Docker container wiht API and inject it in CA network"
-	@echo "ca_docker_down: stop and clear API Docker container"
 	@echo "ca_e2e_test: run end-2-end test with Docker container and API Newman tests on CA network"
+	@echo ""
+	@echo "demo_light_up: run lightcrypto demo"
+	@echo "demo_light_down: stop lightcrypto demo and clear containers"
 	@echo ""
 
 ##### BUILD
@@ -90,8 +92,8 @@ basic_docker_up:
 	@./scripts/basic-docker-up.sh
 
 basic_docker_down:
-	@docker stop frag
-	@docker rm frag
+	@docker stop frag; true
+	@docker rm frag; true
 
 basic_newman_test:
 	@./scripts/basic-newman-test.sh
@@ -112,8 +114,8 @@ byfn_docker_up:
 	@./scripts/byfn-docker-up.sh
 
 byfn_docker_down:
-	@docker stop frag
-	@docker rm frag
+	@docker stop frag; true
+	@docker rm frag; true
 
 byfn_newman_test:
 	@./scripts/byfn-newman-test.sh
@@ -129,14 +131,14 @@ ca_up:
 ca_clear:
 	@./scripts/ca-clear.sh
 
-ca_docker_up:
-	@./scripts/ca-docker-up.sh
-
-ca_docker_down:
-	@docker stop frag
-	@docker rm frag
-
 ca_test:
 	@./scripts/ca-test.sh
 
-ca_e2e_test: docker_build ca_up ca_docker_up ca_test ca_docker_down ca_clear
+ca_e2e_test: docker_build ca_up ca_test ca_clear
+
+##### Light crypto demo
+demo_light_up: byfn_up byfn_docker_up
+	@./scripts/demo-light-up.sh
+
+demo_light_down: byfn_docker_down byfn_clear
+	@./scripts/demo-light-down.sh

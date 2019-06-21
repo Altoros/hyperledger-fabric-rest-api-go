@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CC_VERSION="1.0"
-CC_PATH="./chaincode/events"
+CC_PATH="./test/chaincode/events"
 
 tmpName=$(mktemp)
 tar -zcvf ${tmpName} -C ${CC_PATH} .

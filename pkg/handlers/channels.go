@@ -2,20 +2,21 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/context"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 // Get channels list
 func GetChannelsHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	peer, err := c.CurrentPeer()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	jsonString, err := c.Fsc().Channels(peer)
+	jsonString, err := api.Channels(c.Fsc(), peer)
 	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
@@ -26,19 +27,19 @@ func PostChannelsHandler(ec echo.Context) error {
 }
 
 func GetChannelsChannelIdHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
-	jsonString, err := c.Fsc().ChannelInfo(c.Param("channelId"))
+	c := ec.(*context.ApiContext)
+	jsonString, err := api.ChannelInfo(c.Fsc(), c.Param("channelId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
 func GetChannelsChannelIdOrgsHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
-	jsonString, err := c.Fsc().ChannelOrgs(c.Param("channelId"))
+	c := ec.(*context.ApiContext)
+	jsonString, err := api.ChannelOrgs(c.Fsc(), c.Param("channelId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }
 
 func GetChannelsChannelIdPeersHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
-	jsonString, err := c.Fsc().ChannelPeers(c.Param("channelId"))
+	c := ec.(*context.ApiContext)
+	jsonString, err := api.ChannelPeers(c.Fsc(), c.Param("channelId"))
 	return GetJsonOutputWrapper(c, jsonString, err)
 }

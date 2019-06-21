@@ -2,7 +2,7 @@
 
 FROM golang:1.12-alpine3.9 AS build
 
-RUN apk add --no-cache make git
+RUN apk add --no-cache make git gcc musl-dev
 
 WORKDIR /src/
 

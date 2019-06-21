@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fabric-rest-api-go/pkg/sdk"
 	"fmt"
 	"github.com/Jeffail/gabs"
 	"github.com/golang/protobuf/proto"
@@ -14,9 +15,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (fsc *FabricSdkClient) InstalledChaincodes(peer fab.Peer) (string, error) {
+func InstalledChaincodes(fsc sdk.AdminProvider, peer fab.Peer) (string, error) {
 
-	queryInstalledChaincodesResponse, err := fsc.admin.QueryInstalledChaincodes(resmgmt.WithTargets(peer))
+	queryInstalledChaincodesResponse, err := fsc.Admin().QueryInstalledChaincodes(resmgmt.WithTargets(peer))
 	installedChaincodes := queryInstalledChaincodesResponse.GetChaincodes()
 
 	if err != nil {
@@ -27,9 +28,9 @@ func (fsc *FabricSdkClient) InstalledChaincodes(peer fab.Peer) (string, error) {
 	return string(jsonBytes), nil
 }
 
-func (fsc *FabricSdkClient) InstantiatedChaincodes(channelId string, peer fab.Peer) (string, error) {
+func InstantiatedChaincodes(fsc sdk.AdminProvider, channelId string, peer fab.Peer) (string, error) {
 
-	queryInstantiatedChaincodesResponse, err := fsc.admin.QueryInstantiatedChaincodes(channelId, resmgmt.WithTargets(peer))
+	queryInstantiatedChaincodesResponse, err := fsc.Admin().QueryInstantiatedChaincodes(channelId, resmgmt.WithTargets(peer))
 
 	if err != nil {
 		return "", err
@@ -39,7 +40,7 @@ func (fsc *FabricSdkClient) InstantiatedChaincodes(channelId string, peer fab.Pe
 	return string(jsonBytes), nil
 }
 
-func (fsc *FabricSdkClient) ChaincodeInfo(channelId, chainCodeId string, peer fab.Peer) (string, error) {
+func ChaincodeInfo(fsc sdk.ChannelClientProvider, channelId, chainCodeId string, peer fab.Peer) (string, error) {
 
 	var args [][]byte
 	args = append(args, []byte(channelId))

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/utils"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -19,7 +20,7 @@ type InstallCcRequest struct {
 }
 
 func PostChaincodesInstallHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	installRequest := new(InstallCcRequest)
 	if err := c.Bind(installRequest); err != nil {

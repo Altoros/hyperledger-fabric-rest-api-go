@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/notifications"
 	"fmt"
 	"github.com/gorilla/websocket"
@@ -18,7 +19,7 @@ var upgrader = websocket.Upgrader{
 var wsList []*websocket.Conn
 
 func NotificationsHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
@@ -72,7 +73,7 @@ type NotificationsServiceMessage struct {
 	Message string `json:"message"`
 }
 
-func ProcessMessage(c *ApiContext, ws *websocket.Conn, msg []byte) error {
+func ProcessMessage(c *context.ApiContext, ws *websocket.Conn, msg []byte) error {
 	EventSubscribeMessage := EventSubscribeMessage{}
 	err := json.Unmarshal(msg, &EventSubscribeMessage)
 

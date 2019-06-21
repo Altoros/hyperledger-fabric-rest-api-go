@@ -1,0 +1,371 @@
+swagger: '2.0'
+info:
+  description: Hyperledger Fabric REST API @Altoros
+  version: 1.0.0
+  title: Hyperledger Fabric REST API
+
+tags:
+  - name: light
+    description: Operations with CA, peers and orderer with light-cryptography
+
+paths:
+  /ca/tbs-csr:
+    post:
+      tags:
+        - light
+      summary: Create tbs CSR
+      description: Creates TBS CSR from public key and user data.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CaTbsCsrRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CaTbsCsrRequest'
+      responses:
+        200:
+          description: response with base64 encoded TBS CSR and its hash
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CaTbsCsrResponse'
+        400:
+          description: bad input parameter
+
+  /ca/enroll-csr:
+    post:
+      tags:
+        - light
+      summary: enroll with signed CSR
+      description: |
+        Enroll with signed CSR.
+        User should sign provided TBS CSR hash with his private key and send signature to API with same TBS CSR bytes.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: CaEnrollCsrRequest
+          required: true
+          schema:
+            $ref: '#/definitions/CaEnrollCsrRequest'
+      responses:
+        200:
+          description: B64 encoded user X.509 certificate
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CaEnrollCsrResponse'
+        400:
+          description: bad input parameter
+
+  /tx/proposal:
+    post:
+      tags:
+        - light
+      summary: Create transaction proposal
+      description: |
+        Create unsigned transaction proposal, which contains all proposal data like chaincode name, chaincode function and arguments etc.
+        Not contain any info about target peers, only generating proposal locally.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: ProposalRequest
+          required: true
+          schema:
+            $ref: '#/definitions/ProposalRequest'
+      responses:
+        200:
+          description: B64 encoded protobuf transation proposal and it's hash
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProposalResponse'
+        400:
+          description: bad input parameter
+
+  /tx/query:
+    post:
+      tags:
+        - light
+      summary: Query peer with signed tx proposal
+      description: |
+        Query single peer with signed transaction proposal bytes.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: TxQueryRequest
+          required: true
+          schema:
+            $ref: '#/definitions/TxQueryRequest'
+      responses:
+        200:
+          description: chaincode response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TxQueryResponse'
+        400:
+          description: bad input parameter
+
+  /tx/prepare-broadcast:
+    post:
+      tags:
+        - light
+      summary: Collect endorsments, prepare envelope to orderer
+      description: |
+        Send signed proposal to selected peers, collecting endorsements.
+        Generating broadcast payload bytes and it's hash as a result.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: TxPrepareBroadcastRequest
+          required: true
+          schema:
+            $ref: '#/definitions/TxPrepareBroadcastRequest'
+      responses:
+        200:
+          description: B64 broadcast payload protobuf with endorsements and it's hash
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TxPrepareBroadcastResponse'
+        400:
+          description: bad input parameter
+
+  /tx/broadcast:
+    post:
+      tags:
+        - light
+      summary: Broadcast tx through orderer
+      description: Broadcast envelope to orderer
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: TxBroadcastRequest
+          required: true
+          schema:
+            $ref: '#/definitions/TxBroadcastRequest'
+      responses:
+        200:
+          description: transaction id
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/TxBroadcastResponse'
+        400:
+          description: bad input parameter
+
+definitions:
+  CaTbsCsrRequest:
+    type: object
+    required:
+      - x
+      - y
+      - login
+    properties:
+      x:
+        type: string
+        description: part of ECDSA public key
+        example: 6951a441c8c67de5dac4c4dc20eada901fcecae8af7f6eaf088edd8c5268d7b2
+      y:
+        type: string
+        description: part of ECDSA public key
+        example: 17d9e47a70826bf521b160fa6a106fa3a4312118c44cec2d9a435511fda2a918
+      login:
+        type: string
+        example: UserLogin
+      email:
+        type: string
+        example: user@altoros.com
+  CaTbsCsrResponse:
+    type: object
+    properties:
+      tbs_csr_bytes:
+        type: string
+        description: bytes is B64 encoded and must be passed to enroll-csr method as is
+        example: MIHAAgEAMF4xCzAJBgNVBAYTAlVTMRcwFQYDVQQIEw5Ob3J0aCBDYXJvbGluYTEUMBIGA1UEChMLSHlwZXJsZWRnZXIxDzANBgNVBAsTBkZhYnJpYzEPMA0GA1UEAxMGVXNlckNhMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAENuJ7eSHRrnrcYMFR4OTkz26Ikc
+      tbs_csr_hash:
+        type: string
+        description: sha256 hash of tbsCSR bytes
+        example: 8ddb30fe6c353743214f1fb257c87d847b0ff7c76897a3241e432015c927f382
+
+  CaEnrollCsrRequest:
+    type: object
+    required:
+      - login
+      - password
+      - tbs_csr_bytes
+      - r
+      - s
+    properties:
+      login:
+        type: string
+        example: userLogin
+      password:
+        type: string
+        example: bCcgDuAsvmqZ
+      tbs_csr_bytes:
+        description: B64 encoded tbsCSR bytes
+        example: MIHAAgEAMF4xCzAJBgNVBAYTAlVTMRcwFQYDVQQIEw5Ob3J0aCBDYXJvbGluYTEUMBIGA1UEChMLSHlwZXJsZWRnZXIxDzANBgNVBAsTBkZhYnJpYzEPMA0GA1UEAxMGVXNlckNhMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAENuJ7eSHRrnrcYMFR4OTkz26Ikc
+        type: string
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 583d7f85e891424999b336b05661b09e63fbd812f05d72ee7c3c278d4573d4f7
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: f8d4e3162caace582cdd9b9a9965d6b8a3e3b0771a33d301c2f104e492493791
+  CaEnrollCsrResponse:
+    type: object
+    properties:
+      user_cert:
+        type: string
+        description: B64 encoded user X.509 certificate
+        example: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNuRENDQWtLZ0F3SUJBZ0lVQjhZc2gzaFhtMGhxMVRKZTNEeUhpSVZ3SGtVd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRTBNVEF5T1RBd1doY05NakF3TmpFek1UQXoKTkRBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRDlPdURzeituZTJYdHNYYlFBWGFoeG8KMGpwUDl6bzZ6ZzF4MGhzT1VXTzJCdmtaZlJlcXBic0U4Q1hsNTJZUldUckJHRHl4cisremY4QWlWV0pVL0JHagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGR0VVCkJ6V1ZUVGk4MHdRcnQxTlYyTTBhYzNsV01Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05JQURCRkFpRUF3S0U0dXZvOHNLUmZwTkJFV3V5TUdTQ2EKcEpHdmdHQUhEajNNSVN2S3FPNENJR2txVWdPSjZvbUdvNldObDk5SUdBa29iRlVuOW5hRmI5YlNpRVVFMHFmegotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+
+  ProposalRequest:
+    type: object
+    required:
+      - chaincode_id
+      - channel_id
+      - fcn
+      - msp_id
+      - user_cert
+    properties:
+      chaincode_id:
+        type: string
+        description: chaincode ID
+      channel_id:
+        type: string
+        description: fabric network channel ID
+      fcn:
+        type: string
+        description: chaincode function to call
+      args:
+        type: array
+        items:
+          type: string
+        description: arguments to chaincode function call
+      msp_id:
+        type: string
+        description: membership service provider ID
+        example: Org1MSP
+      user_cert:
+        type: string
+        description: B64 encoded user X.509 certificate
+        example: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNuRENDQWtLZ0F3SUJBZ0lVQjhZc2gzaFhtMGhxMVRKZTNEeUhpSVZ3SGtVd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRTBNVEF5T1RBd1doY05NakF3TmpFek1UQXoKTkRBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRDlPdURzeituZTJYdHNYYlFBWGFoeG8KMGpwUDl6bzZ6ZzF4MGhzT1VXTzJCdmtaZlJlcXBic0U4Q1hsNTJZUldUckJHRHl4cisremY4QWlWV0pVL0JHagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGR0VVCkJ6V1ZUVGk4MHdRcnQxTlYyTTBhYzNsV01Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05JQURCRkFpRUF3S0U0dXZvOHNLUmZwTkJFV3V5TUdTQ2EKcEpHdmdHQUhEajNNSVN2S3FPNENJR2txVWdPSjZvbUdvNldObDk5SUdBa29iRlVuOW5hRmI5YlNpRVVFMHFmegotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+  ProposalResponse:
+    type: object
+    properties:
+      proposal_bytes:
+        type: string
+        example: CtkICmcIAxoMCKHg+OcFELrPqPMBIglteWNoYW5uZWwqQDBmNTQzZThlOGM3YjBiOWI1ZmM1MjlhNTVhODY5MDllOGI2OWUwZTI1MzU3YWI0ZWQxN2E4YTU0OTFhMjhjY2M6CBIGEgRteWNjEu0HCtAHCgdPcmcxTVNQEsQHLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNtekNDQWtLZ0F3SUJBZ0lVUVhjL2txd3p2TSswSlVjZ254Q29BeTFMZGprd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRXdNVEF5TURBd1doY05NakF3TmpBNU1UQXkKTlRBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCUGtycDltbThkT3lKV1V2TFVIcHMydGsKdDRPOTQ5cGl4Q3VWcUYzRzdiQjJOMEZqc1pmcGlHRVp5cTJXeVRFdUtuUmp5TzZIRjhMS21BL2FWMnFCVHdTagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGQzM1Ckg3Z01BM1VNNDd6NmRyQ3MwZU1FbE8ya01Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05IQURCRUFpQU04SXpRWEl3U0w4TTJxeGhuaEc5dXZzR3YKZ20wTXFHSllqMTE0TnppVC9nSWdSaUpSZTJjTWJZK1U2UktQaWF1NHd1M3NUV1BGSy9jZHk5V3d5Y1ZIKzU4PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChIYOdS4cEPHK5O7h61RhH8w1/uJRoVXiM9MEhoKGAoWCAESBhIEbXljYxoKCgVxdWVyeQoBYQ==
+      proposal_hash:
+        type: string
+        description: sha256 hash of transaction proposal bytes
+        example: 0ebfe32c9509c31a85b72f8ef837fa1bfbeb99b0114c8e37d4d73216e47953db
+
+  TxQueryRequest:
+    type: object
+    required:
+      - proposal_bytes
+      - r
+      - s
+      - peer
+    properties:
+      proposal_bytes:
+        type: string
+        example: CtkICmcIAxoMCKHg+OcFELrPqPMBIglteWNoYW5uZWwqQDBmNTQzZThlOGM3YjBiOWI1ZmM1MjlhNTVhODY5MDllOGI2OWUwZTI1MzU3YWI0ZWQxN2E4YTU0OTFhMjhjY2M6CBIGEgRteWNjEu0HCtAHCgdPcmcxTVNQEsQHLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNtekNDQWtLZ0F3SUJBZ0lVUVhjL2txd3p2TSswSlVjZ254Q29BeTFMZGprd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRXdNVEF5TURBd1doY05NakF3TmpBNU1UQXkKTlRBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCUGtycDltbThkT3lKV1V2TFVIcHMydGsKdDRPOTQ5cGl4Q3VWcUYzRzdiQjJOMEZqc1pmcGlHRVp5cTJXeVRFdUtuUmp5TzZIRjhMS21BL2FWMnFCVHdTagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGQzM1Ckg3Z01BM1VNNDd6NmRyQ3MwZU1FbE8ya01Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05IQURCRUFpQU04SXpRWEl3U0w4TTJxeGhuaEc5dXZzR3YKZ20wTXFHSllqMTE0TnppVC9nSWdSaUpSZTJjTWJZK1U2UktQaWF1NHd1M3NUV1BGSy9jZHk5V3d5Y1ZIKzU4PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChIYOdS4cEPHK5O7h61RhH8w1/uJRoVXiM9MEhoKGAoWCAESBhIEbXljYxoKCgVxdWVyeQoBYQ==
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 583d7f85e891424999b336b05661b09e63fbd812f05d72ee7c3c278d4573d4f7
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: f8d4e3162caace582cdd9b9a9965d6b8a3e3b0771a33d301c2f104e492493791
+      peer:
+        type: string
+        example: org1/peer0
+  TxQueryResponse:
+    type: object
+    properties:
+      result:
+        type: string
+
+  TxPrepareBroadcastRequest:
+    type: object
+    required:
+      - proposal_bytes
+      - r
+      - s
+      - peers
+    properties:
+      proposal_bytes:
+        type: string
+        example: CtkICmcIAxoMCKHg+OcFELrPqPMBIglteWNoYW5uZWwqQDBmNTQzZThlOGM3YjBiOWI1ZmM1MjlhNTVhODY5MDllOGI2OWUwZTI1MzU3YWI0ZWQxN2E4YTU0OTFhMjhjY2M6CBIGEgRteWNjEu0HCtAHCgdPcmcxTVNQEsQHLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNtekNDQWtLZ0F3SUJBZ0lVUVhjL2txd3p2TSswSlVjZ254Q29BeTFMZGprd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRXdNVEF5TURBd1doY05NakF3TmpBNU1UQXkKTlRBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCUGtycDltbThkT3lKV1V2TFVIcHMydGsKdDRPOTQ5cGl4Q3VWcUYzRzdiQjJOMEZqc1pmcGlHRVp5cTJXeVRFdUtuUmp5TzZIRjhMS21BL2FWMnFCVHdTagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGQzM1Ckg3Z01BM1VNNDd6NmRyQ3MwZU1FbE8ya01Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05IQURCRUFpQU04SXpRWEl3U0w4TTJxeGhuaEc5dXZzR3YKZ20wTXFHSllqMTE0TnppVC9nSWdSaUpSZTJjTWJZK1U2UktQaWF1NHd1M3NUV1BGSy9jZHk5V3d5Y1ZIKzU4PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChIYOdS4cEPHK5O7h61RhH8w1/uJRoVXiM9MEhoKGAoWCAESBhIEbXljYxoKCgVxdWVyeQoBYQ==
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 583d7f85e891424999b336b05661b09e63fbd812f05d72ee7c3c278d4573d4f7
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: f8d4e3162caace582cdd9b9a9965d6b8a3e3b0771a33d301c2f104e492493791
+      peers:
+        type: array
+        items:
+          type: string
+        example: ["org1/peer0", "org2/peer0"]
+  TxPrepareBroadcastResponse:
+    type: object
+    properties:
+      payload_bytes:
+        type: string
+        example: CtkICmcIAxoMCO2w+ecFEOKgvKgCIglteWNoYW5uZWwqQDIzMDNhYmI0ZGFkOGU3NmI2MDE1Zjc4MWNmZjhjMjBkYzkwYWZlNjlhZGI4M2Y3NDgxMzMyODc2NzlmYmE1MDU6CBIGEgRteWNjEu0HCtAHCgdPcmcxTVNQEsQHLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNtekNDQWtLZ0F3SUJBZ0lVTWhETG15WkhWcllWTyszbnRuSE1hbWNPWUNRd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRXdNVE14TXpBd1doY05NakF3TmpBNU1UTXgKT0RBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRzloWGZSK2xndFQvc2JwVG0rbGFubnoKUnkxT0ZEbys1Q1c4QTNneHdrNi8wRUJybXZjK1JJK1RkMFlvc3FUL3ZPQmh5M1ZXd2ZqY21QcHF6SUtuMXdHagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGTk94CmZVc1RXY0JFcTMzSmpoS3V4ZmZJK3JXak1Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05IQURCRUFpQnIrdkdpSFUrVE5HMk9La2ZLU1h5NFJxYjMKUlJaRGFMUWNha2FqcXJiSkVRSWdKS3F2QmZvNGtjVnFsZTNsaGNRbjBMa0FCU2xwMmdwU0RJREY1SFVRK1pBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChIY84yyKHtH10cnva4O+IYrTfQdQO170/ccEuUPCuIPCu0HCtAHCgdPcmcxTVNQEsQHLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNtekNDQWtLZ0F3SUJBZ0lVTWhETG15WkhWcllWTyszbnRuSE1hbWNPWUNRd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRXdNVE14TXpBd1doY05NakF3TmpBNU1UTXgKT0RBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRzloWGZSK2xndFQvc2JwVG0rbGFubnoKUnkxT0ZEbys1Q1c4QTNneHdrNi8wRUJybXZjK1JJK1RkMFlvc3FUL3ZPQmh5M1ZXd2ZqY21QcHF6SUtuMXdHagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGTk94CmZVc1RXY0JFcTMzSmpoS3V4ZmZJK3JXak1Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05IQURCRUFpQnIrdkdpSFUrVE5HMk9La2ZLU1h5NFJxYjMKUlJaRGFMUWNha2FqcXJiSkVRSWdKS3F2QmZvNGtjVnFsZTNsaGNRbjBMa0FCU2xwMmdwU0RJREY1SFVRK1pBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChIY84yyKHtH10cnva4O+IYrTfQdQO170/ccEu8HChoKGAoWCAESBhIEbXljYxoKCgVxdWVyeQoBYRLQBwpdCiBStKdA1rfm+dQC6lykokbCeo0eZ02UNWNtrKpF3fUwexI5CiUSFAoEbHNjYxIMCgoKBG15Y2MSAggBEg0KBG15Y2MSBQoDCgFhGgMIyAEiCxIEbXljYxoDMi4wEu4GCqIGCgdPcmcxTVNQEpYGLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHakNDQWNDZ0F3SUJBZ0lSQVBsd0YvclVaVVA5bXFONHdTbWw0aXN3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGN3T0RNeE1Ea3hORE15V2hjTk1qY3dPREk1TURreE5ETXkKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXhNV2NHVmxjakF1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkhpaHhXNmtzM0IyKzVYZGJBVnEzQ0JneFJSUloyMngKenpwcW5EODZuS2t6N2ZCRWxCdWhsWGwySzZyVHh5WTJPQk9CMHRzOGtlcVo5M3h1ZVJHeW1yYWpUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSUVJNXFnM05kdHJ1CnVMb00ybkFZVWRGRkJOTWFyUnN0M2R1c2FsYzJYa2w4TUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFENGowUm4KZTFycmQwRlNDenNSNnUrSXV1UEs1ZEkva1IvYmg3K1ZMZjBUTmdJZ0NmVXRrSnZmdnpWRXdaTEZvRnlqb0h0cgp0dnd6TlVTMVUwaEVxSWFEZW80PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChJHMEUCIQDok31fVQyoQ/wzD3we0HBXx5NuQ3V6JNe0hm2pvrUXmwIgPOPM7U1GLJ+hhdZGSD4lKKeW35PCmBkVzD9NvFBepOI=
+      payload_hash:
+        type: string
+        description: sha256 hash of broadcast payload bytes
+        example: d1128a6185539e0326c71cfa975fb770d0b2a14d8c8e0857f32dfd5e253e9695
+
+  TxBroadcastRequest:
+    required:
+      - payload_bytes
+      - r
+      - s
+    properties:
+      payload_bytes:
+        type: string
+        example: CtkICmcIAxoMCO2w+ecFEOKgvKgCIglteWNoYW5uZWwqQDIzMDNhYmI0ZGFkOGU3NmI2MDE1Zjc4MWNmZjhjMjBkYzkwYWZlNjlhZGI4M2Y3NDgxMzMyODc2NzlmYmE1MDU6CBIGEgRteWNjEu0HCtAHCgdPcmcxTVNQEsQHLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNtekNDQWtLZ0F3SUJBZ0lVTWhETG15WkhWcllWTyszbnRuSE1hbWNPWUNRd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRXdNVE14TXpBd1doY05NakF3TmpBNU1UTXgKT0RBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRzloWGZSK2xndFQvc2JwVG0rbGFubnoKUnkxT0ZEbys1Q1c4QTNneHdrNi8wRUJybXZjK1JJK1RkMFlvc3FUL3ZPQmh5M1ZXd2ZqY21QcHF6SUtuMXdHagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGTk94CmZVc1RXY0JFcTMzSmpoS3V4ZmZJK3JXak1Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05IQURCRUFpQnIrdkdpSFUrVE5HMk9La2ZLU1h5NFJxYjMKUlJaRGFMUWNha2FqcXJiSkVRSWdKS3F2QmZvNGtjVnFsZTNsaGNRbjBMa0FCU2xwMmdwU0RJREY1SFVRK1pBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChIY84yyKHtH10cnva4O+IYrTfQdQO170/ccEuUPCuIPCu0HCtAHCgdPcmcxTVNQEsQHLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNtekNDQWtLZ0F3SUJBZ0lVTWhETG15WkhWcllWTyszbnRuSE1hbWNPWUNRd0NnWUlLb1pJemowRUF3SXcKY3pFTE1Ba0dBMVVFQmhNQ1ZWTXhFekFSQmdOVkJBZ1RDa05oYkdsbWIzSnVhV0V4RmpBVUJnTlZCQWNURFZOaApiaUJHY21GdVkybHpZMjh4R1RBWEJnTlZCQW9URUc5eVp6RXVaWGhoYlhCc1pTNWpiMjB4SERBYUJnTlZCQU1UCkUyTmhMbTl5WnpFdVpYaGhiWEJzWlM1amIyMHdIaGNOTVRrd05qRXdNVE14TXpBd1doY05NakF3TmpBNU1UTXgKT0RBd1dqQmVNUXN3Q1FZRFZRUUdFd0pWVXpFWE1CVUdBMVVFQ0JNT1RtOXlkR2dnUTJGeWIyeHBibUV4RkRBUwpCZ05WQkFvVEMwaDVjR1Z5YkdWa1oyVnlNUTh3RFFZRFZRUUxFd1pqYkdsbGJuUXhEekFOQmdOVkJBTVRCbFZ6ClpYSkRZVEJaTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEEwSUFCRzloWGZSK2xndFQvc2JwVG0rbGFubnoKUnkxT0ZEbys1Q1c4QTNneHdrNi8wRUJybXZjK1JJK1RkMFlvc3FUL3ZPQmh5M1ZXd2ZqY21QcHF6SUtuMXdHagpnY2d3Z2NVd0RnWURWUjBQQVFIL0JBUURBZ2VBTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGTk94CmZVc1RXY0JFcTMzSmpoS3V4ZmZJK3JXak1Dc0dBMVVkSXdRa01DS0FJRUk1cWczTmR0cnV1TG9NMm5BWVVkRkYKQk5NYXJSc3QzZHVzYWxjMlhrbDhNRmtHQ0NvREJBVUdCd2dCQkUxN0ltRjBkSEp6SWpwN0ltaG1Ma0ZtWm1scwphV0YwYVc5dUlqb2lJaXdpYUdZdVJXNXliMnhzYldWdWRFbEVJam9pVlhObGNrTmhJaXdpYUdZdVZIbHdaU0k2CkltTnNhV1Z1ZENKOWZUQUtCZ2dxaGtqT1BRUURBZ05IQURCRUFpQnIrdkdpSFUrVE5HMk9La2ZLU1h5NFJxYjMKUlJaRGFMUWNha2FqcXJiSkVRSWdKS3F2QmZvNGtjVnFsZTNsaGNRbjBMa0FCU2xwMmdwU0RJREY1SFVRK1pBPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChIY84yyKHtH10cnva4O+IYrTfQdQO170/ccEu8HChoKGAoWCAESBhIEbXljYxoKCgVxdWVyeQoBYRLQBwpdCiBStKdA1rfm+dQC6lykokbCeo0eZ02UNWNtrKpF3fUwexI5CiUSFAoEbHNjYxIMCgoKBG15Y2MSAggBEg0KBG15Y2MSBQoDCgFhGgMIyAEiCxIEbXljYxoDMi4wEu4GCqIGCgdPcmcxTVNQEpYGLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNHakNDQWNDZ0F3SUJBZ0lSQVBsd0YvclVaVVA5bXFONHdTbWw0aXN3Q2dZSUtvWkl6ajBFQXdJd2N6RUwKTUFrR0ExVUVCaE1DVlZNeEV6QVJCZ05WQkFnVENrTmhiR2xtYjNKdWFXRXhGakFVQmdOVkJBY1REVk5oYmlCRwpjbUZ1WTJselkyOHhHVEFYQmdOVkJBb1RFRzl5WnpFdVpYaGhiWEJzWlM1amIyMHhIREFhQmdOVkJBTVRFMk5oCkxtOXlaekV1WlhoaGJYQnNaUzVqYjIwd0hoY05NVGN3T0RNeE1Ea3hORE15V2hjTk1qY3dPREk1TURreE5ETXkKV2pCYk1Rc3dDUVlEVlFRR0V3SlZVekVUTUJFR0ExVUVDQk1LUTJGc2FXWnZjbTVwWVRFV01CUUdBMVVFQnhNTgpVMkZ1SUVaeVlXNWphWE5qYnpFZk1CMEdBMVVFQXhNV2NHVmxjakF1YjNKbk1TNWxlR0Z0Y0d4bExtTnZiVEJaCk1CTUdCeXFHU000OUFnRUdDQ3FHU000OUF3RUhBMElBQkhpaHhXNmtzM0IyKzVYZGJBVnEzQ0JneFJSUloyMngKenpwcW5EODZuS2t6N2ZCRWxCdWhsWGwySzZyVHh5WTJPQk9CMHRzOGtlcVo5M3h1ZVJHeW1yYWpUVEJMTUE0RwpBMVVkRHdFQi93UUVBd0lIZ0RBTUJnTlZIUk1CQWY4RUFqQUFNQ3NHQTFVZEl3UWtNQ0tBSUVJNXFnM05kdHJ1CnVMb00ybkFZVWRGRkJOTWFyUnN0M2R1c2FsYzJYa2w4TUFvR0NDcUdTTTQ5QkFNQ0EwZ0FNRVVDSVFENGowUm4KZTFycmQwRlNDenNSNnUrSXV1UEs1ZEkva1IvYmg3K1ZMZjBUTmdJZ0NmVXRrSnZmdnpWRXdaTEZvRnlqb0h0cgp0dnd6TlVTMVUwaEVxSWFEZW80PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tChJHMEUCIQDok31fVQyoQ/wzD3we0HBXx5NuQ3V6JNe0hm2pvrUXmwIgPOPM7U1GLJ+hhdZGSD4lKKeW35PCmBkVzD9NvFBepOI=
+      r:
+        type: string
+        description: part of ECDSA signature
+        example: 37a336ed9f68d43bc2c448b868d10fd1b3b740172f14ff6eedee9aef33d5ec9b
+      s:
+        type: string
+        description: part of ECDSA signature
+        example: 708cc3d9b238ef6a11433c594820230c13185a12894b879b32d8b5878f766980
+  TxBroadcastResponse:
+    type: object
+    properties:
+      result:
+        type: string
+        example: 2303abb4dad8e76b6015f781cff8c20dc90afe69adb83f748133287679fba505
