@@ -137,7 +137,7 @@ ca_test:
 ca_e2e_test: docker_build ca_up ca_test ca_clear
 
 ##### Light crypto demo
-demo_light_up: byfn_up byfn_docker_up
+demo_light_up: docker_build byfn_up byfn_docker_up
 	@./scripts/demo-light-up.sh
 
 demo_light_down: byfn_docker_down byfn_clear
