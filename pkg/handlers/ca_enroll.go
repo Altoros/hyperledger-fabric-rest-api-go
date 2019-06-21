@@ -3,13 +3,14 @@ package handlers
 import (
 	"fabric-rest-api-go/pkg/api"
 	"fabric-rest-api-go/pkg/ca"
+	"fabric-rest-api-go/pkg/context"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 func PostCaEnrollHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	enrollRequest := new(ca.ApiEnrollRequest)
 	if err := c.Bind(enrollRequest); err != nil {

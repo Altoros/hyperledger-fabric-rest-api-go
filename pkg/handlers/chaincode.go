@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/context"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 func GetChaincodesInstalledHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	peer, err := c.CurrentPeer()
 	if err != nil {
@@ -20,7 +21,7 @@ func GetChaincodesInstalledHandler(ec echo.Context) error {
 
 // Get instantiated chaincodes list
 func GetChaincodesInstantiatedHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	peer, err := c.CurrentPeer()
 	if err != nil {
@@ -32,7 +33,7 @@ func GetChaincodesInstantiatedHandler(ec echo.Context) error {
 }
 
 func GetChaincodesInfoHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	peer, err := c.CurrentPeer()
 	if err != nil {

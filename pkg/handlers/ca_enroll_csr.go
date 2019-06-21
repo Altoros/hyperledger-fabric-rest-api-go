@@ -5,6 +5,7 @@ import (
 	"encoding/pem"
 	"fabric-rest-api-go/pkg/api"
 	"fabric-rest-api-go/pkg/ca"
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/utils"
 	"github.com/labstack/echo/v4"
 	"math/big"
@@ -24,7 +25,7 @@ type CaEnrollCsrResponse struct {
 }
 
 func PostCaEnrollCsrHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	caEnrollCsrRequest := new(CaEnrollCsrRequest)
 	if err := c.Bind(caEnrollCsrRequest); err != nil {

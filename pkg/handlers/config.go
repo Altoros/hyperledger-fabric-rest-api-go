@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fabric-rest-api-go/pkg/context"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -11,7 +12,7 @@ type ConfigResponse struct {
 }
 
 func GetConfigHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	configResponse := ConfigResponse{Org: c.Fsc().ApiConfig.Org.Name}
 

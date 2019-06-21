@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/context"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -14,7 +15,7 @@ type InvokeRequest struct {
 }
 
 func PostInvokeHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	invokeRequest := new(InvokeRequest)
 	if err := c.Bind(invokeRequest); err != nil {

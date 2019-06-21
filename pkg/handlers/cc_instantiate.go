@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/context"
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -17,7 +18,7 @@ type InstantiateCcRequest struct {
 }
 
 func PostChaincodesInstantiateHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	instantiateCcRequest := new(InstantiateCcRequest)
 	if err := c.Bind(instantiateCcRequest); err != nil {

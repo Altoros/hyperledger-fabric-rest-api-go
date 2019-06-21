@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/ca"
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/sdk"
 	"fabric-rest-api-go/pkg/tx"
 	"fabric-rest-api-go/pkg/utils"
@@ -23,7 +24,7 @@ type TxQueryResponse struct {
 }
 
 func PostTxQueryHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	txQueryRequest := new(TxQueryRequest)
 	if err := c.Bind(txQueryRequest); err != nil {

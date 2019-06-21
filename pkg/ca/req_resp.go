@@ -42,8 +42,9 @@ type CaEnrollResponse struct {
 	Success  bool                   `json:"success"`
 }
 
-type ApiRegisterRequest struct {
-	Login string `json:"login"`
+type ApiCaRegisterRequest struct {
+	Login    string `json:"login" validate:"required"`
+	Password string `json:"password"`
 }
 
 type CaRegisterResponseResult struct {

@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fabric-rest-api-go/pkg/ca"
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/sdk"
 	"fabric-rest-api-go/pkg/utils"
 	"fmt"
@@ -14,9 +15,51 @@ import (
 	"os"
 )
 
-func CaRegister(apiConfig *sdk.Config, registerRequest *ca.ApiRegisterRequest) (string, error) {
+type CaRegisterAttr struct {
+	// Attribute name
+	Name string `json:"name" validate:"required"`
+	// Value of attribute
+	Value string `json:"value" validate:"required"`
+	// A value of true indicates that this attribute should be included in an enrollment certificate by default
+	Ecert bool `json:"ecert"`
+}
 
-	jsonRegisterRequest := fmt.Sprintf(`{"id":"%s","type":"client","affiliation":""}`, registerRequest.Login)
+type CaRegisterRequest struct {
+	// The enrollment ID which uniquely identifies an identity
+	Id string `json:"id" validate:"required"`
+	// The type of the identity (e.g. user, app, peer, orderer, etc)
+	Type string `json:"type,omitempty"`
+	// The enrollment secret. If not provided, a random secret is generated.
+	Secret string `json:"secret,omitempty"`
+	// The maximum number of times that the secret can be used to enroll.
+	// If 0, use the configured max_enrollments of the fabric-ca-server;
+	// If > 0 and <= configured max enrollments of the fabric-ca-server, use max_enrollments;
+	// If > configured max enrollments of the fabric-ca-server, error.
+	MaxEnrollments int `json:"max_enrollments,omitempty"`
+	// The affiliation of the new identity.
+	// If no affliation is provided, the affiliation of the registrar is used.
+	Affiliation string `json:"affiliation,omitempty"`
+	// An array of attribute names and values to give to the registered identity.
+	Attrs []CaRegisterAttr `json:"attrs,omitempty"`
+	// Name of the CA to direct traffic to within server.
+	Caname string `json:"caname"`
+}
+
+func CaRegister(c context.ValidationProvider, apiConfig *sdk.Config, registerRequest *ca.ApiCaRegisterRequest) (string, error) {
+
+	caRegisterRequest := CaRegisterRequest{
+		Id:     registerRequest.Login,
+		Secret: registerRequest.Password,
+		Type:   "client",
+	}
+	if err := c.Validate(caRegisterRequest); err != nil {
+		return "", errors.Wrap(c.ValidationErrors(err), "failed to construct correct CaRegisterRequest")
+	}
+
+	jsonRegisterRequest, err := json.Marshal(caRegisterRequest)
+	if err != nil {
+		return "", errors.Wrap(err, "failed to marshal caRegisterRequest json")
+	}
 
 	// load private key pem
 	home, err := os.UserHomeDir()
@@ -73,7 +116,7 @@ func CaRegister(apiConfig *sdk.Config, registerRequest *ca.ApiRegisterRequest) (
 
 	caRegisterUrl := fmt.Sprintf("%s/register", apiConfig.Ca.Address)
 
-	req, err := http.NewRequest("POST", caRegisterUrl, bytes.NewBufferString(jsonRegisterRequest))
+	req, err := http.NewRequest("POST", caRegisterUrl, bytes.NewBuffer(jsonRegisterRequest))
 	if err != nil {
 		return "", err
 	}

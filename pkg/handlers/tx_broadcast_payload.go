@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/ca"
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/tx"
 	"fabric-rest-api-go/pkg/utils"
 	"fmt"
@@ -27,7 +28,7 @@ type TxPrepareBroadcastResponse struct {
 }
 
 func PostTxPrepareBroadcastHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	txPrepareBroadcastRequest := new(TxPrepareBroadcastRequest)
 	if err := c.Bind(txPrepareBroadcastRequest); err != nil {

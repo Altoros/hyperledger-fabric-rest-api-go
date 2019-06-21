@@ -5,6 +5,7 @@ import (
 	"crypto/elliptic"
 	"crypto/sha256"
 	"fabric-rest-api-go/pkg/ca"
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/utils"
 	"fmt"
 	"github.com/labstack/echo/v4"
@@ -13,7 +14,7 @@ import (
 )
 
 func PostCaTbsCsrHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	caTbsCsrRequest := new(ca.CaTbsCsrRequest)
 	if err := c.Bind(caTbsCsrRequest); err != nil {

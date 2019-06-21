@@ -1,4 +1,4 @@
-package handlers
+package context
 
 import (
 	"fabric-rest-api-go/pkg/sdk"
@@ -25,6 +25,11 @@ func (c *ApiContext) Fsc() *sdk.FabricSdkClient {
 
 func (c *ApiContext) SetFsc(fsc *sdk.FabricSdkClient) {
 	c.fsc = fsc
+}
+
+type ValidationProvider interface {
+	Validate(i interface{}) error
+	ValidationErrors(err error) error
 }
 
 // converts go-playground/validator ValidationErrors to one simple combined english message error

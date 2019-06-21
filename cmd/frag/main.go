@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/handlers"
 	"fabric-rest-api-go/pkg/sdk"
 	"flag"
@@ -63,7 +64,7 @@ func main() {
 
 	e.Use(func(h echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &handlers.ApiContext{Context: c, Translator: translator}
+			cc := &context.ApiContext{Context: c, Translator: translator}
 			cc.SetFsc(&fsc)
 			return h(cc)
 		}

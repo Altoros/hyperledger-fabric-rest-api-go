@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fabric-rest-api-go/pkg/api"
+	"fabric-rest-api-go/pkg/context"
 	"github.com/Jeffail/gabs"
 	"github.com/labstack/echo/v4"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 )
 
 func GetQueryHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	fcn := c.FormValue("fcn")
 	args := strings.Split(c.FormValue("args"), ",")

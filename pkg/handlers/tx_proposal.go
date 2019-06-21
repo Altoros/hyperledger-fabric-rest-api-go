@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fabric-rest-api-go/pkg/context"
 	"fabric-rest-api-go/pkg/tx"
 	"fabric-rest-api-go/pkg/utils"
 	"fmt"
@@ -24,7 +25,7 @@ type ProposalResponse struct {
 }
 
 func PostTxProposalHandler(ec echo.Context) error {
-	c := ec.(*ApiContext)
+	c := ec.(*context.ApiContext)
 
 	proposalRequest := new(ProposalRequest)
 	if err := c.Bind(proposalRequest); err != nil {
