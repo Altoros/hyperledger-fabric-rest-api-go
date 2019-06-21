@@ -217,7 +217,7 @@ export default {
 
     caCreds: {
       login: "UserCa",
-      password: ""
+      password: "password"
     },
 
     enrollSuccess: false,

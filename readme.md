@@ -7,6 +7,7 @@ Features
 * Chaincode detailed info
 * Channels list
 * Channel peers
+* CA and transactions light cryptography
 * ...
 
 ## Local test instructions
@@ -75,17 +76,59 @@ Postman collection
 
 */test/FabricApiBYFN.postman_collection.json*
 
+## Light cryptography demo
+
+Start BYFN network with API and demo app at http://localhost:3000/.
+Also script will register demo user in ORG1 CA with creds - CaUser:password
+
+```
+make demo_light_up
+```
+
+Stop demo app and clear containers
+
+```
+make demo_light_down
+```
+
+
+Example sequence of actions to interact with standard A to B transfer chaincode:
+
+#### Enroll user:
+
+1) "GET TBS CSR /CA/TBSCSR"
+2) "SIGN TBS CSR"
+3) "ENROLL TO CA WITH CREDS, TBS CSR AND SIGNATURE - /CA/ENROLL_CSR"
+
+#### Query:
+
+1) Fill out five fields with: mychannel / mycc / Org1MSP / query / a
+2) "CALL /TX/PROPOSAL"
+3) "SIGN PROPOSAL"
+4) "QUERY PROPOSAL"
+
+#### Invoke:
+
+1) Fill out five fields with: mychannel / mycc / Org1MSP / invoke / a,b,15
+2) "CALL /TX/PROPOSAL"
+3) "SIGN PROPOSAL"
+4) Fill out endorsement peers with: org1/peer0,org2/peer0
+5) "GET BROADCAST PAYLOAD (PROPOSAL+ENDORSMENTS)"
+6) "SIGN BROADCAST PAYLOAD"
+7) "BROADCAST PAYLOAD WITH SIGNATURE"
+
+After finishing invoke sequence you may run query sequence again, to check out that value have been changed.
+
+
 ## Work progress 
 
 ### Close plans
 
 * Channels creation
-* Chaincode installation & instantiation 
+* Network management 
+* Documentation 
 
 ### Strategic plans
 
-* Organisations and users management 
-* More tests with BYFN
 * Cover code with unit test (partially done)
-* Move configuration to ENV variables
 

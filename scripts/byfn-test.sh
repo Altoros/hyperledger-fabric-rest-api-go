@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# // TODO add jq app installation check
+# // TODO use jq from docker image
 
 QUERY_RESULT_1=$(curl -s -X GET 'localhost:8080/channels/mychannel/chaincodes/mycc/query?fcn=query&args=a' | jq -r '.result')
 
