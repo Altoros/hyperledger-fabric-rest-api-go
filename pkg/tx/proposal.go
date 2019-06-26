@@ -80,7 +80,7 @@ func ProposalHash(proposal *peer.Proposal) ([]byte, error) {
 	return proposalSha256, nil
 }
 
-func SendProposalToPeersEndorsment(signedProposal *peer.SignedProposal, targets []sdk.ApiPeer) ([]*peer.ProposalResponse, error) {
+func SendProposalToPeersEndorsement(signedProposal *peer.SignedProposal, targets []sdk.ApiPeer) ([]*peer.ProposalResponse, error) {
 	var proposalResponses []*peer.ProposalResponse
 
 	for _, target := range targets {
