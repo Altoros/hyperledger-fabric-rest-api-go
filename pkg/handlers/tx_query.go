@@ -60,7 +60,7 @@ func PostTxQueryHandler(ec echo.Context) error {
 
 	signedProposal := &peer.SignedProposal{ProposalBytes: proposalBytes, Signature: proposalSignature}
 
-	proposalResponses, err := tx.SendProposalToPeersEndorsment(signedProposal, targets)
+	proposalResponses, err := tx.SendProposalToPeersEndorsement(signedProposal, targets)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
