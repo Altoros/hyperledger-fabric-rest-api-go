@@ -1,6 +1,6 @@
 # Stage 1 - building app
 
-FROM golang:1.12-alpine3.9 AS build
+FROM golang:1.13-alpine3.10 AS build
 
 RUN apk add --no-cache make git gcc musl-dev
 
@@ -19,7 +19,7 @@ RUN make build
 
 # Stage 2 - serving app
 
-FROM alpine:3.9
+FROM alpine:3.10
 
 WORKDIR /app/
 
